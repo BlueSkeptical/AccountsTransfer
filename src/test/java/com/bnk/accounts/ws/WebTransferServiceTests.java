@@ -1,7 +1,6 @@
 package com.bnk.accounts.ws;
 
 import com.bnk.accounts.*;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;

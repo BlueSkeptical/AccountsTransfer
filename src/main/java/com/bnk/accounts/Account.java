@@ -6,5 +6,5 @@ public interface Account {
 
     long balance();
 
-    void deposit(long value);
+    void deposit(long value) throws TransferException;
 }

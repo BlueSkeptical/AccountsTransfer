@@ -19,9 +19,8 @@ public class Transfer {
     
     public void execute() throws TransferException {
         
-        if (from.balance() < amount) {
-            throw new TransferException();
-        }
+        
+        
         from.deposit(-amount);
         to.deposit(amount);
     }

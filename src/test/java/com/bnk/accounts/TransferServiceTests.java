@@ -41,5 +41,14 @@ public class TransferServiceTests {
         assertEquals(100, account0.balance());
         assertEquals(200, account1.balance());
     }
+    
+    @Test(expected = TransferException.class)
+    public void should_throw_exception_when_amount_on_destination_account_after_transfer_will_cause_overflow() throws TransferException {
+        final Account account0 = new DefaultAccount(0, 100);
+        final Account account1 = new DefaultAccount(1, DefaultAccount.MAX_VALUE - 100);
+        final TransferService transferService = new DefaultTransferService(new SimpleAccountsRepository(account0, account1));
+      
+        transferService.transfer(0, 1, 101);
+    }
    
 }
