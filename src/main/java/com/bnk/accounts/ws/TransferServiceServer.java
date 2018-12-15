@@ -5,10 +5,24 @@
  */
 package com.bnk.accounts.ws;
 
+import com.bnk.accounts.SimpleAccountsRepository;
+
 /**
  *
  * @author ThinkPad
  */
 public class TransferServiceServer {
+
+    TransferServiceServer(SimpleAccountsRepository simpleAccountsRepository) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    TransferServiceServer(int port, SimpleAccountsRepository simpleAccountsRepository) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    void start() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

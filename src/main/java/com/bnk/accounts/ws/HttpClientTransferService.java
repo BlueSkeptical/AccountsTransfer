@@ -1,12 +1,13 @@
 package com.bnk.accounts.ws;
 
-import com.bnk.accounts.SimpleAccountsRepository;
 import com.bnk.accounts.TransferException;
 import com.bnk.accounts.TransferService;
+import java.net.InetSocketAddress;
 
 public class HttpClientTransferService implements TransferService {
 
-    HttpClientTransferService(SimpleAccountsRepository simpleAccountsRepository) {
+
+    HttpClientTransferService(InetSocketAddress testServerAddress) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
