@@ -10,6 +10,9 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
+/**
+ * Web service client implementation
+ */
 public class TransferServiceServer {
 
     public static final int DEFAULT_PORT = 8080;
@@ -24,7 +27,7 @@ public class TransferServiceServer {
 
     public void start() throws Exception {
         QueuedThreadPool threadPool = new QueuedThreadPool();
-        threadPool.setMaxThreads(500);
+        threadPool.setMaxThreads(50);
         
         server = new Server(threadPool);
         final ServerConnector connector = new ServerConnector(server);

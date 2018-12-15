@@ -10,6 +10,9 @@ import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ * Web service client implementation
+ */
 public class HttpClientTransferService implements TransferService {
 
     public static final int READ_TIMEOUT = 5_000;
