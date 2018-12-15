@@ -13,7 +13,7 @@ import java.net.URL;
 public class HttpClientTransferService implements TransferService {
 
     public static final int READ_TIMEOUT = 5_000;
-    public static final int CONNECT_TIMEOUNT = 5_000;
+    public static final int CONNECT_TIMEOUT = 5_000;
     
     private final InetSocketAddress address;
     
@@ -33,7 +33,7 @@ public class HttpClientTransferService implements TransferService {
                 
             con.setRequestMethod("POST");
             con.setRequestProperty("Content-Type", "text/plain");
-            con.setConnectTimeout(CONNECT_TIMEOUNT);
+            con.setConnectTimeout(CONNECT_TIMEOUT);
             con.setReadTimeout(READ_TIMEOUT);
             
             final BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));

@@ -1,7 +1,6 @@
 
 package com.bnk.accounts.ws;
 
-import com.bnk.accounts.AccountsRepository;
 import com.bnk.accounts.TransferException;
 import com.bnk.accounts.TransferService;
 import java.io.IOException;
