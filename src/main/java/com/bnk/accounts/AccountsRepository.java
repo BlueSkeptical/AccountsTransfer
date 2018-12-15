@@ -1,13 +1,11 @@
 package com.bnk.accounts;
 
 import java.util.Collection;
+import java.util.Optional;
 
-/**
- * Created by ThinkPad on 12/12/2018.
- */
 public interface AccountsRepository
 {
-    Account account(int id);
+    Optional<Account> account(int id);
 
     Collection<Account> accounts();
 }

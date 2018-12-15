@@ -1,8 +1,15 @@
 package com.bnk.accounts;
 
-/**
- * Created by ThinkPad on 12/12/2018.
- */
+
 public interface TransferService {
-    void transfer( int from, int to, long amount) throws TransferException;
+    
+    /**
+     * Transfers value between two accounts
+     * 
+     * @param from id of the source Account
+     * @param to id of the destination Account
+     * @param amount value to transfer
+     * @throws TransferException if unable to transfer, the balances stay unchanged
+     */
+    void transfer(int from, int to, long amount) throws TransferException;
 }

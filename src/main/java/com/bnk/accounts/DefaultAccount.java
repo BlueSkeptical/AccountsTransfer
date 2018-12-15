@@ -1,19 +1,21 @@
 package com.bnk.accounts;
 
 /**
- * Created by ThinkPad on 12/12/2018.
+ * A mutable implementation of an account
  */
 public class DefaultAccount implements Account {
     
+    private final int id;
     private long balance;
     
-    public DefaultAccount(long initilalBalance) {
-        balance = initilalBalance;
+    public DefaultAccount(int id, long initilalBalance) {
+        this.id = id;
+        this.balance = initilalBalance;
     }
 
     @Override
     public int id() {
-        return 0;
+        return id;
     }
 
     @Override
@@ -23,6 +25,6 @@ public class DefaultAccount implements Account {
 
     @Override
     public void deposit(long value) {
-        balance+=value;
+        balance += value;
     }
 }
