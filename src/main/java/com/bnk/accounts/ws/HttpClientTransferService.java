@@ -27,7 +27,7 @@ public class HttpClientTransferService implements TransferService {
             final HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 
             con.setRequestMethod("GET");
-            con.setRequestProperty("Content-Type", "application/text");
+            con.setRequestProperty("Content-Type", "text/plain");
             con.setConnectTimeout(CONNECT_TIMEOUNT);
             con.setReadTimeout(READ_TIMEOUT);
             

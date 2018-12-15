@@ -19,7 +19,7 @@ public class WebTransferServiceTests {
     
     
     @BeforeClass
-    public static void setupEnvironment() {
+    public static void setupEnvironment() throws Exception {
         account0 = new DefaultAccount(0, 100);
         account1 = new DefaultAccount(1, 200);
         account2 = new DefaultAccount(2, 200);
