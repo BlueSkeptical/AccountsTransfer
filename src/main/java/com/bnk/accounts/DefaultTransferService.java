@@ -1,24 +1,21 @@
 package com.bnk.accounts;
 
+import java.util.Objects;
+
 
 public class DefaultTransferService implements TransferService {
     private final AccountsRepository accountsRepository;
+    
     public DefaultTransferService(AccountsRepository accountsRepository) {
+        Objects.requireNonNull(accountsRepository);
         this.accountsRepository = accountsRepository;
     }
-    //TODO introduce Transfer, delegate to Transfer.execute()
+
     @Override 
     public void transfer(int fromId, int toId, long amount) throws TransferException {
-        final Account fromAccount = accountsRepository.account(fromId).orElseThrow(() -> new TransferException());
+        final Account fromAccount = accountsRepository.account(fromId).orElseThrow(() -> new TransferException("Source account not found, id=" + fromId));
+        final Account toAccount = accountsRepository.account(toId).orElseThrow(() -> new TransferException("Destination account not found id=" + toId));
         
-        if (fromAccount.balance() < amount) {
-            throw new TransferException();
-        }TransferException
-        
-        final Account toAccount = accountsRepository.account(toId).orElseThrow(() -> new TransferException());
-        
-
-        fromAccount.deposit(-amount);
-        toAccount.deposit(amount);
+        new Transfer(fromAccount, toAccount, amount).execute();       
     }
 }
