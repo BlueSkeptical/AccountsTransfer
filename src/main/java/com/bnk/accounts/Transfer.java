@@ -20,8 +20,8 @@ public class Transfer {
     public void execute() throws TransferException {
         
         
-        
-        from.deposit(-amount);
+    
+        from.withdraw(amount);
         to.deposit(amount);
     }
     

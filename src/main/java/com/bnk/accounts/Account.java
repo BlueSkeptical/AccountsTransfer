@@ -7,4 +7,6 @@ public interface Account {
     long balance();
 
     void deposit(long value) throws TransferException;
+    
+    void withdraw(long value) throws TransferException;
 }

@@ -42,7 +42,6 @@ public class WebTransferServiceTests {
     @Test
     public void should_correctly_transfer_some_amount_from_one_account_to_another() throws TransferException {
         final TransferService transferService = new HttpClientTransferService(testServerAddress);
-
         transferService.transfer(0, 1, 10);
         synchronized(accountsRepository) {
             assertEquals(90, account0.balance());

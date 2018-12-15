@@ -27,12 +27,19 @@ public class DefaultAccount implements Account {
 
     @Override
     public void deposit(long value) throws TransferException {
-        if (value < 0 && balance + value < 0) {
-            throw new TransferException("Not enough value on the account");
-        }
-        if (value > 0 && MAX_VALUE - value < balance) {
+        if (MAX_VALUE - value < balance) {
             throw new TransferException("Transfer will cause account overflow");
         }
         balance += value;
     }
+    
+    
+    @Override
+    public void withdraw(long value) throws TransferException {
+        if (balance - value < 0) {
+            throw new TransferException("Not enough value on the account");
+        }
+        balance -= value;
+    }
+    
 }
