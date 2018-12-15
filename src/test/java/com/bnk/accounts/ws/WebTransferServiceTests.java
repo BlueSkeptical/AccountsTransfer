@@ -2,6 +2,8 @@ package com.bnk.accounts.ws;
 
 import com.bnk.accounts.*;
 import java.net.InetSocketAddress;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -16,16 +18,13 @@ public class WebTransferServiceTests {
     static TransferServiceServer webTransferServiceServer;
     static InetSocketAddress testServerAddress;
     
-    
-    
     @BeforeClass
     public static void setupEnvironment() throws Exception {
         account0 = new DefaultAccount(0, 100);
         account1 = new DefaultAccount(1, 200);
         account2 = new DefaultAccount(2, 200);
         
-        serviceServer = new TransferServiceServer(PORT, new SimpleAccountsRepository(account0, account1, account2));
-        serviceServer.start();
+        new ServerStart().run();
         
         testServerAddress = new InetSocketAddress("localhost", PORT);
     }
@@ -41,5 +40,16 @@ public class WebTransferServiceTests {
         assertEquals(210, account1.balance());
     }
     
-  
+      static class ServerStart implements Runnable {
+
+        @Override
+        public void run() {
+            serviceServer = new TransferServiceServer(PORT, new SimpleAccountsRepository(account0, account1, account2));
+            try {
+                serviceServer.start();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        }  
+    }
 }

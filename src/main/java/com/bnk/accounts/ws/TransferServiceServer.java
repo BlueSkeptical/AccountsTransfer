@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.bnk.accounts.ws;
 
 import com.bnk.accounts.AccountsRepository;
@@ -12,11 +7,8 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
-/**
- *
- * @author ThinkPad
- */
 public class TransferServiceServer {
 
     public static final int DEFAULT_PORT = 8080;
@@ -30,8 +22,10 @@ public class TransferServiceServer {
     }
 
     public void start() throws Exception {
-        server = new Server();
+        QueuedThreadPool threadPool = new QueuedThreadPool();
+        threadPool.setMaxThreads(500);
         
+        server = new Server(threadPool);
         final ServerConnector connector = new ServerConnector(server);
         connector.setPort(port);
         server.setConnectors(new Connector[] {connector});
@@ -42,11 +36,7 @@ public class TransferServiceServer {
         context.addServlet(new ServletHolder(new TransferServlet(accountsRepository)), "/transfer/*");
         
         server.setHandler(context);
-        server.start(); 
-        
-        while( !server.isRunning()) {
-            Thread.sleep(500);
-        }    
+        server.start();    
     }
     
     public void join() throws InterruptedException {

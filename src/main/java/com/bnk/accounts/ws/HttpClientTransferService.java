@@ -23,7 +23,7 @@ public class HttpClientTransferService implements TransferService {
     @Override
     public void transfer(int from, int to, long amount) throws TransferException {
         try {
-            final URL url = new URL( "http://" + address.getHostString() + "/accounts/transfer?from=" + from + "&to=" + to + "&amount=" + amount);
+            final URL url = new URL( "http://" + address.getHostString()+ ":" + address.getPort() + "/accounts/transfer?from=" + from + "&to=" + to + "&amount=" + amount);
             final HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 
             con.setRequestMethod("GET");
