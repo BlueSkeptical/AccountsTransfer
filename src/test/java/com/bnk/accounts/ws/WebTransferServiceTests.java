@@ -10,20 +10,22 @@ import org.junit.Test;
 public class WebTransferServiceTests {
 
     static final int PORT = 8080;
-    
-    Account account0;
-    Account account1;
-    TransferServiceServer webTransferServiceServer;
-    InetSocketAddress testServerAddress;
+    static TransferServiceServer serviceServer;
+    static Account account0;
+    static Account account1;
+    static Account account2;
+    static TransferServiceServer webTransferServiceServer;
+    static InetSocketAddress testServerAddress;
     
     
     
     @BeforeClass
-    public void setupEnvironment() {
+    public static void setupEnvironment() {
         account0 = new DefaultAccount(0, 100);
         account1 = new DefaultAccount(1, 200);
+        account2 = new DefaultAccount(2, 200);
         
-        TransferServiceServer serviceServer = new TransferServiceServer(PORT, new SimpleAccountsRepository(account0, account1));
+        serviceServer = new TransferServiceServer(PORT, new SimpleAccountsRepository(account0, account1, account2));
         serviceServer.start();
         
         testServerAddress = new InetSocketAddress("localhost", PORT);
@@ -40,29 +42,5 @@ public class WebTransferServiceTests {
         assertEquals(210, account1.balance());
     }
     
-    @Test(expected = TransferException.class)
-    public void should_throw_exception_when_amount_on_source_account_is_not_enough() throws TransferException {
-        final Account account0 = new DefaultAccount(0, 100);
-        final Account account1 = new DefaultAccount(1, 200);
-        final TransferService transferService = new HttpClientTransferService(testServerAddress);
-      
-        transferService.transfer(0, 1, 101);
-    }
-    
-    @Test
-    public void should_keep_old_balance_after_exception_when_amount_on_source_account_is_not_enough() {
-        final Account account0 = new DefaultAccount(0, 100);
-        final Account account1 = new DefaultAccount(1, 200);
-        final TransferService transferService = new HttpClientTransferService(testServerAddress);
-        
-        try {
-            transferService.transfer(0, 1, 101);
-        } catch (TransferException ex) {
-            //NO-OP
-        }
-
-        assertEquals(100, account0.balance());
-        assertEquals(200, account1.balance());
-    }
-   
+  
 }
