@@ -13,7 +13,7 @@ public class DefaultTransferService implements TransferService {
         
         if (fromAccount.balance() < amount) {
             throw new TransferException();
-        }
+        }TransferException
         
         final Account toAccount = accountsRepository.account(toId).orElseThrow(() -> new TransferException());
         

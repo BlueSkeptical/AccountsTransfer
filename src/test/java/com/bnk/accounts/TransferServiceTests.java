@@ -41,6 +41,5 @@ public class TransferServiceTests {
         assertEquals(100, account0.balance());
         assertEquals(200, account1.balance());
     }
-    
-    
+   
 }
