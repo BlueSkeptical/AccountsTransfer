@@ -5,10 +5,10 @@ package com.bnk.accounts;
  */
 public class DefaultAccount implements Account {
     
+    public static long MAX_VALUE = Long.MAX_VALUE;
+    
     private final int id;
     private long balance;
-    
-    public static long MAX_VALUE = Long.MAX_VALUE;
     
     public DefaultAccount(int id, long initilalBalance) {
         this.id = id;
