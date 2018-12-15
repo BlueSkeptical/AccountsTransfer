@@ -1,6 +1,7 @@
 package com.bnk.accounts.ws;
 
 import com.bnk.accounts.AccountsRepository;
+import com.bnk.accounts.DefaultTransferService;
 import com.bnk.accounts.SimpleAccountsRepository;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -33,7 +34,7 @@ public class TransferServiceServer {
         final ServletContextHandler context = new ServletContextHandler();
         context.setContextPath("/accounts"); 
         
-        context.addServlet(new ServletHolder(new TransferServlet(accountsRepository)), "/transfer/*");
+        context.addServlet(new ServletHolder(new TransferServlet(new DefaultTransferService(accountsRepository))), "/transfer/*");
         
         server.setHandler(context);
         server.start();    

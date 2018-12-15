@@ -13,9 +13,11 @@ public class DefaultTransferService implements TransferService {
 
     @Override 
     public void transfer(int fromId, int toId, long amount) throws TransferException {
-        final Account fromAccount = accountsRepository.account(fromId).orElseThrow(() -> new TransferException("Source account not found, id=" + fromId));
-        final Account toAccount = accountsRepository.account(toId).orElseThrow(() -> new TransferException("Destination account not found id=" + toId));
+        synchronized(accountsRepository) {
+            final Account fromAccount = accountsRepository.account(fromId).orElseThrow(() -> new TransferException("Source account not found, id=" + fromId));
+            final Account toAccount = accountsRepository.account(toId).orElseThrow(() -> new TransferException("Destination account not found id=" + toId));
         
-        new Transfer(fromAccount, toAccount, amount).execute();       
+            new Transfer(fromAccount, toAccount, amount).execute(); 
+        }      
     }
 }

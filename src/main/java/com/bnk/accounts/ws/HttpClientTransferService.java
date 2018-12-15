@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class HttpClientTransferService implements TransferService {
@@ -23,7 +24,11 @@ public class HttpClientTransferService implements TransferService {
     @Override
     public void transfer(int from, int to, long amount) throws TransferException {
         try {
-            final URL url = new URL( "http://" + address.getHostString()+ ":" + address.getPort() + "/accounts/transfer?from=" + from + "&to=" + to + "&amount=" + amount);
+            final URL url = new URL( "http://" 
+                                    + address.getHostString() + ":" + address.getPort()
+                                    + "/accounts/transfer?from=" + from
+                                    + "&to=" + to 
+                                    + "&amount=" + amount);
             final HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 
             con.setRequestMethod("GET");
@@ -43,8 +48,10 @@ public class HttpClientTransferService implements TransferService {
                 throw new TransferException(content.toString());
             }
             
-        } catch (TransferException | IOException ex) {
+        } catch (MalformedURLException ex) {
             throw new RuntimeException(ex);
+        } catch(IOException ex) {
+            throw new TransferException();
         }
     }
     

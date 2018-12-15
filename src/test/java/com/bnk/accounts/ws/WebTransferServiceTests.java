@@ -15,15 +15,24 @@ public class WebTransferServiceTests {
     static Account account0;
     static Account account1;
     static Account account2;
+    static AccountsRepository accountsRepository;
     static TransferServiceServer webTransferServiceServer;
     static InetSocketAddress testServerAddress;
     
     @BeforeClass
     public static void setupEnvironment() throws Exception {
-        account0 = new DefaultAccount(0, 100);
-        account1 = new DefaultAccount(1, 200);
-        account2 = new DefaultAccount(2, 200);
         
+        account0 = new DefaultAccount(0, 0);
+        account1 = new DefaultAccount(1, 0);
+        account2 = new DefaultAccount(2, 0);
+        accountsRepository = new SimpleAccountsRepository(account0, account1, account2);
+        
+        synchronized(accountsRepository) {
+            account0.deposit(100);
+            account1.deposit(200);
+            account2.deposit(300);
+        }
+         
         new ServerStart().run();
         
         testServerAddress = new InetSocketAddress("localhost", PORT);
@@ -35,16 +44,31 @@ public class WebTransferServiceTests {
         final TransferService transferService = new HttpClientTransferService(testServerAddress);
 
         transferService.transfer(0, 1, 10);
-
-        assertEquals(90, account0.balance());
-        assertEquals(210, account1.balance());
+        synchronized(accountsRepository) {
+            assertEquals(90, account0.balance());
+            assertEquals(210, account1.balance());
+        }
+        
+        transferService.transfer(1, 2, 10);
+        synchronized(accountsRepository) {
+            assertEquals(90, account0.balance());
+            assertEquals(200, account1.balance());
+            assertEquals(310, account2.balance());
+        }
+        
+        try {
+            transferService.transfer(0, 2, 100);
+            fail();
+        } catch ( TransferException ex ) {
+            //NO-OP
+        }
     }
     
       static class ServerStart implements Runnable {
 
         @Override
         public void run() {
-            serviceServer = new TransferServiceServer(PORT, new SimpleAccountsRepository(account0, account1, account2));
+            serviceServer = new TransferServiceServer(PORT, accountsRepository);
             try {
                 serviceServer.start();
             } catch (Exception ex) {

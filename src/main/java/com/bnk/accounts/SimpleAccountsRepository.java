@@ -20,9 +20,4 @@ public class SimpleAccountsRepository implements AccountsRepository {
     public Optional<Account> account(int id) {
         return accounts.stream().filter( p -> p.id() == id ).findFirst();
     }
-
-    @Override
-    public Collection<Account> accounts() {
-        return accounts;
-    }
 }
