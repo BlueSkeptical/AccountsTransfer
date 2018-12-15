@@ -31,7 +31,7 @@ public class HttpClientTransferService implements TransferService {
                                     + "&amount=" + amount);
             final HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 
-            con.setRequestMethod("GET");
+            con.setRequestMethod("POST");
             con.setRequestProperty("Content-Type", "text/plain");
             con.setConnectTimeout(CONNECT_TIMEOUNT);
             con.setReadTimeout(READ_TIMEOUT);

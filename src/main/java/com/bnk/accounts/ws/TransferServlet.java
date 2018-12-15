@@ -21,7 +21,7 @@ public class TransferServlet extends HttpServlet {
     }
     
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/plain");
         
         final int fromAccountId = Integer.parseInt(request.getParameter("from"));
