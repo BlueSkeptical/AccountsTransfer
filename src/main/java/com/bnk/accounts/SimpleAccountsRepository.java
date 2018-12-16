@@ -12,6 +12,9 @@ public class SimpleAccountsRepository implements AccountsRepository {
     
     private final Collection<Account> accounts;
     
+    /**
+     * @param accounts should be provided on construction time
+     */
     public SimpleAccountsRepository(Account... accounts) {
         this.accounts = Arrays.asList(accounts);
     }

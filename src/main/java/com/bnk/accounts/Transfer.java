@@ -2,6 +2,9 @@ package com.bnk.accounts;
 
 import java.util.Objects;
 
+/**
+ * Inter account transfer logic
+ */
 public class Transfer {
     
     private final Account from;

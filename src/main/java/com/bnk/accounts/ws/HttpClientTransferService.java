@@ -23,7 +23,6 @@ public class HttpClientTransferService implements TransferService {
     public static final String AMOUNT_PARAMETER_NAME = "amount";
     public static final String CONTENT_TYPE = "text/plain";
     public static final String TRANSFER_RESOURCE_NAME = "transfer";
-    public static final String HTTP_METHOD = "POST";
     public static final int BUSINESS_LOGIC_CONFLICT_HTTP_CODE = 409;
     
     private final InetSocketAddress address;
@@ -49,7 +48,7 @@ public class HttpClientTransferService implements TransferService {
                                     + "&" + AMOUNT_PARAMETER_NAME + "=" + amount);
             final HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 
-            con.setRequestMethod(HTTP_METHOD);
+            con.setRequestMethod("POST");
             con.setRequestProperty("Content-Type", CONTENT_TYPE);
             con.setConnectTimeout(CONNECT_TIMEOUT_MS);
             con.setReadTimeout(READ_TIMEOUT_MS);

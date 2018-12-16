@@ -1,8 +1,8 @@
 package com.bnk.accounts;
 
 /**
- * A mutable implementation of an account, 
- * the balance cannot be negative
+ * An implementation of an account, 
+ * with the balance that cannot be negative
  */
 public class DefaultAccount implements Account {
     

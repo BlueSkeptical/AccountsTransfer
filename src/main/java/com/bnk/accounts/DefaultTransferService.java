@@ -1,6 +1,8 @@
 package com.bnk.accounts;
 
-
+/**
+ * The simplest possible implementation of transfers executor
+ */
 public class DefaultTransferService implements TransferService {
  
     @Override 
