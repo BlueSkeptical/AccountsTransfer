@@ -2,7 +2,6 @@ package com.bnk.accounts;
 
 /**
  * An account type
- * The balance read value and balance change operations parameters are represented as long integer values
  */
 public interface Account {
     
