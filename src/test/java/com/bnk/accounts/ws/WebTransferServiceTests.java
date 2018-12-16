@@ -41,14 +41,14 @@ public class WebTransferServiceTests {
     @Test
     public void should_correctly_perform_transfers_routine() throws TransferException {
         
-        transferService.transfer(0, 1, 10);
+        transferService.transfer(account0, account1, 10);
         synchronized(accountsRepository) {
             assertEquals(90, account0.balance());
             assertEquals(210, account1.balance());
             assertEquals(300, account2.balance());
         }
         
-        transferService.transfer(1, 2, 10);
+        transferService.transfer(account1, account2, 10);
         synchronized(accountsRepository) {
             assertEquals(90, account0.balance());
             assertEquals(200, account1.balance());
@@ -57,7 +57,7 @@ public class WebTransferServiceTests {
         
         //an attempt to transfer more than left on the account
         try {
-            transferService.transfer(0, 2, 100);
+            transferService.transfer(account0, account2, 100);
             fail();
         } catch ( TransferException ex ) {
             assertTrue(ex.getMessage().contains("ERR"));
