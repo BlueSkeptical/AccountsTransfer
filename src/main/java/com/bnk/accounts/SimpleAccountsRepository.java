@@ -6,7 +6,7 @@ import java.util.Optional;
 
 
 /**
- * Created by ThinkPad on 12/12/2018.
+ * An implementation of AccountsRepository with linear search for accounts
  */
 public class SimpleAccountsRepository implements AccountsRepository {
     

@@ -37,10 +37,10 @@ public class TransferServiceServer {
         server.setConnectors(new Connector[] {connector});
         
         final ServletContextHandler context = new ServletContextHandler();
-        context.setContextPath("/accounts"); 
+        context.setContextPath("/" + HttpClientTransferService.ACCOUNTS_API_PATH); 
         
-        context.addServlet(new ServletHolder(new TransferServlet(new DefaultTransferService(accountsRepository))),
-                                             HttpClientTransferService.TRANSFER_API_PATH + "/*");
+        context.addServlet(new ServletHolder(new AccountsServlet(new DefaultTransferService(accountsRepository))),
+                                                  "/*");
         
         server.setHandler(context);
         server.start();    
