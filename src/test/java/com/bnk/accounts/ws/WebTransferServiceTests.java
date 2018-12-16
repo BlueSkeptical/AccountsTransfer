@@ -60,7 +60,7 @@ public class WebTransferServiceTests {
             transferService.transfer(0, 2, 100);
             fail();
         } catch ( TransferException ex ) {
-            //NO-OP
+            assertTrue(ex.getMessage().contains("ERR"));
         }
         synchronized(accountsRepository) {
             assertEquals(90, account0.balance());

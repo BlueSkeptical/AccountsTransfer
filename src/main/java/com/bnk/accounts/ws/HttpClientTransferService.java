@@ -7,16 +7,24 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * Web service client implementation
+ * The transfers web service client
+ * for simple HTTP call
  */
 public class HttpClientTransferService implements TransferService {
 
     public static final int READ_TIMEOUT = 5_000;
     public static final int CONNECT_TIMEOUT = 5_000;
+    
+    public static final String FROM_ACCOUNT_PARAMETER_NAME = "from";
+    public static final String TO_ACCOUNT_PARAMETER_NAME = "to";
+    public static final String AMOUNT_PARAMETER_NAME = "amount";
+    public static final String CONTENT_TYPE = "text/plain";
+    public static final String TRANSFER_API_PATH = "/transfer";
+    public static final String HTTP_METHOD = "POST";
+    public static final int BUSINESS_LOGIC_CONFLICT_HTTP_CODE = 409;
     
     private final InetSocketAddress address;
     
@@ -24,37 +32,40 @@ public class HttpClientTransferService implements TransferService {
        this.address = address;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void transfer(int from, int to, long amount) throws TransferException {
         try {
             final URL url = new URL( "http://" 
                                     + address.getHostString() + ":" + address.getPort()
-                                    + "/accounts/transfer?from=" + from
-                                    + "&to=" + to 
-                                    + "&amount=" + amount);
+                                    + "/accounts" + TRANSFER_API_PATH
+                                    + "?" + FROM_ACCOUNT_PARAMETER_NAME + "=" + from
+                                    + "&" + TO_ACCOUNT_PARAMETER_NAME + "=" + to 
+                                    + "&" + AMOUNT_PARAMETER_NAME + "=" + amount);
             final HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 
-            con.setRequestMethod("POST");
-            con.setRequestProperty("Content-Type", "text/plain");
+            con.setRequestMethod(HTTP_METHOD);
+            con.setRequestProperty("Content-Type", CONTENT_TYPE);
             con.setConnectTimeout(CONNECT_TIMEOUT);
             con.setReadTimeout(READ_TIMEOUT);
             
-            final BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            final StringBuilder content = new StringBuilder();
-            while ((inputLine = in.readLine()) != null) {
-                  content.append(inputLine);
+            if (con.getResponseCode() != 200) {
+                final BufferedReader in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+                String inputLine;
+                final StringBuilder content = new StringBuilder();
+                while ((inputLine = in.readLine()) != null) {
+                      content.append(inputLine);
+                }
+                if(con.getResponseCode() == BUSINESS_LOGIC_CONFLICT_HTTP_CODE) {
+                    throw new TransferException(content.toString());
+                }
+                throw new RuntimeException("Server error: " + con.getResponseCode() + content);
             }
             
-            if( con.getResponseCode() != 200)
-            {
-                throw new TransferException(content.toString());
-            }
-            
-        } catch (MalformedURLException ex) {
+        } catch (IOException ex) {
             throw new RuntimeException(ex);
-        } catch(IOException ex) {
-            throw new TransferException();
         }
     }
     

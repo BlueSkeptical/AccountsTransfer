@@ -11,11 +11,13 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
 /**
- * Web service client implementation
+ * The server implementation for transfers
  */
 public class TransferServiceServer {
 
     public static final int DEFAULT_PORT = 8080;
+    private static final int MAX_THREADS = 50;
+    
     private final AccountsRepository accountsRepository;
     private final int port;
     private Server server;
@@ -27,7 +29,7 @@ public class TransferServiceServer {
 
     public void start() throws Exception {
         QueuedThreadPool threadPool = new QueuedThreadPool();
-        threadPool.setMaxThreads(50);
+        threadPool.setMaxThreads(MAX_THREADS);
         
         server = new Server(threadPool);
         final ServerConnector connector = new ServerConnector(server);
@@ -37,7 +39,8 @@ public class TransferServiceServer {
         final ServletContextHandler context = new ServletContextHandler();
         context.setContextPath("/accounts"); 
         
-        context.addServlet(new ServletHolder(new TransferServlet(new DefaultTransferService(accountsRepository))), "/transfer/*");
+        context.addServlet(new ServletHolder(new TransferServlet(new DefaultTransferService(accountsRepository))),
+                                             HttpClientTransferService.TRANSFER_API_PATH + "/*");
         
         server.setHandler(context);
         server.start();    

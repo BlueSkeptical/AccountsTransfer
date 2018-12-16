@@ -1,10 +1,12 @@
 package com.bnk.accounts;
 
-
+/**
+ * An API for transferring value between two accounts
+ */
 public interface TransferService {
     
     /**
-     * Transfers value between two accounts
+     * Transfers value from one account to an another
      * 
      * @param from id of the source Account
      * @param to id of the destination Account
