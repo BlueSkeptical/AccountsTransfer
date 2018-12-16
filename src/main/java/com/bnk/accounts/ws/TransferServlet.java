@@ -24,24 +24,24 @@ public class TransferServlet extends HttpServlet {
         this.transferDelegate = transferDelegate;
     }
     
-@Override
-protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    response.setContentType(HttpClientTransferService.CONTENT_TYPE);
-    final int fromAccountId = Integer.parseInt(request.getParameter(HttpClientTransferService.FROM_ACCOUNT_PARAMETER_NAME));
-    final int toAccountId = Integer.parseInt(request.getParameter(HttpClientTransferService.TO_ACCOUNT_PARAMETER_NAME));
-    final long amount = Long.parseLong(request.getParameter(HttpClientTransferService.AMOUNT_PARAMETER_NAME));
-        try {
-            final Account fromAccount = accountsRepository.account(fromAccountId).orElseThrow(() -> new TransferException("Source account not found, id=" + fromAccountId));
-            final Account toAccount = accountsRepository.account(toAccountId).orElseThrow(() -> new TransferException("Destination account not found id=" + toAccountId));
-            synchronized(accountsRepository) {  
-                transferDelegate.transfer(fromAccount, toAccount, amount);
-            }
-        } catch (TransferException | NotAuhtorizedException ex) {
-            Logger.getLogger(TransferServlet.class.getName()).log(Level.WARNING, ex.getMessage());
-            response.getWriter().println("ERR:" + ex.getMessage());
-            response.setStatus(HttpServletResponse.SC_CONFLICT);
-            return;
-        } 
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType(HttpClientTransferService.CONTENT_TYPE);
+        final int fromAccountId = Integer.parseInt(request.getParameter(HttpClientTransferService.FROM_ACCOUNT_PARAMETER_NAME));
+        final int toAccountId = Integer.parseInt(request.getParameter(HttpClientTransferService.TO_ACCOUNT_PARAMETER_NAME));
+        final long amount = Long.parseLong(request.getParameter(HttpClientTransferService.AMOUNT_PARAMETER_NAME));
+            try {
+                final Account fromAccount = accountsRepository.account(fromAccountId).orElseThrow(() -> new TransferException("Source account not found, id=" + fromAccountId));
+                final Account toAccount = accountsRepository.account(toAccountId).orElseThrow(() -> new TransferException("Destination account not found id=" + toAccountId));
+                synchronized(accountsRepository) {  
+                    transferDelegate.transfer(fromAccount, toAccount, amount);
+                }
+            } catch (TransferException | NotAuhtorizedException ex) {
+                Logger.getLogger(TransferServlet.class.getName()).log(Level.WARNING, ex.getMessage());
+                response.getWriter().println("ERR:" + ex.getMessage());
+                response.setStatus(HttpServletResponse.SC_CONFLICT);
+                return;
+            } 
         response.setStatus(HttpServletResponse.SC_OK);
         response.getWriter().println("OK"); 
     }               
