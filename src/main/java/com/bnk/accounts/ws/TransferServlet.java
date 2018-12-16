@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 public class TransferServlet extends HttpServlet {
     private final AccountsRepository accountsRepository;
     private final TransferService transferDelegate;

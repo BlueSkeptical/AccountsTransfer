@@ -11,7 +11,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
 /**
- * The server implementation for transfers
+ * The web server 
  */
 public class TransferServiceServer {
 
