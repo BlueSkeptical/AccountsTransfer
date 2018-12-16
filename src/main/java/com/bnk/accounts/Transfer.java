@@ -17,10 +17,8 @@ public class Transfer {
         this.amount = amount;
     }
     
-    public void execute() throws TransferException {
+    public void execute() throws TransferException, NotAuhtorizedException {
         
-        
-    
         from.withdraw(amount);
         to.deposit(amount);
     }

@@ -18,11 +18,13 @@ public class WebTransferServiceTests {
     static TransferService transferService;
     
     @BeforeClass
-    public static void setupEnvironment() throws Exception {
+    public static void setupEnvironment() throws Exception {   
+        transferService = new HttpClientTransferService(new InetSocketAddress("localhost", SERVER_PORT) );
         
-        account0 = new DefaultAccount(0, 0);
-        account1 = new DefaultAccount(1, 0);
-        account2 = new DefaultAccount(2, 0);
+        account0 = new DefaultAccount(0, 0, transferService);
+        account1 = new DefaultAccount(1, 0, transferService);
+        account2 = new DefaultAccount(2, 0, transferService);
+        
         accountsRepository = new SimpleAccountsRepository(account0, account1, account2);
         
         synchronized(accountsRepository) {
@@ -32,23 +34,21 @@ public class WebTransferServiceTests {
         }
          
         serviceServer = new TransferServiceServer(SERVER_PORT, accountsRepository);
-        serviceServer.start();
-        
-        transferService = new HttpClientTransferService(new InetSocketAddress("localhost", SERVER_PORT) );
+        serviceServer.start(); 
     }
     
     
     @Test
-    public void should_correctly_perform_transfers_routine() throws TransferException {
-        
-        transferService.transfer(account0, account1, 10);
+    public void should_correctly_perform_transfers_routine() throws TransferException, NotAuhtorizedException
+    {
+        account0.transferTo(account1, 10);
         synchronized(accountsRepository) {
             assertEquals(90, account0.balance());
             assertEquals(210, account1.balance());
             assertEquals(300, account2.balance());
         }
         
-        transferService.transfer(account1, account2, 10);
+        account1.transferTo(account2, 10);
         synchronized(accountsRepository) {
             assertEquals(90, account0.balance());
             assertEquals(200, account1.balance());
@@ -57,6 +57,7 @@ public class WebTransferServiceTests {
         
         //an attempt to transfer more than left on the account
         try {
+            account0.transferTo(account2, 100);
             transferService.transfer(account0, account2, 100);
             fail();
         } catch ( TransferException ex ) {

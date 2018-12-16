@@ -10,10 +10,12 @@ public class DefaultAccount implements Account {
     
     private final int id;
     private long balance;
+    private TransferService transferService;
     
-    public DefaultAccount(int id, long initilalBalance) {
+    public DefaultAccount(int id, long initilalBalance, TransferService transferService) {
         this.id = id;
         this.balance = initilalBalance;
+        this.transferService = transferService;
     }
 
     @Override
@@ -41,6 +43,11 @@ public class DefaultAccount implements Account {
             throw new TransferException("Not enough value on the account");
         }
         balance -= value;
+    }
+
+    @Override
+    public void transferTo(Account to, long value) throws TransferException,NotAuhtorizedException {
+       transferService.transfer(this, to, value);
     }
     
 }

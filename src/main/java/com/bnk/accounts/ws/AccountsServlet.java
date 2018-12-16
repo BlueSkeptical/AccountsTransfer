@@ -3,6 +3,7 @@ package com.bnk.accounts.ws;
 
 import com.bnk.accounts.Account;
 import com.bnk.accounts.AccountsRepository;
+import com.bnk.accounts.NotAuhtorizedException;
 import com.bnk.accounts.TransferException;
 import com.bnk.accounts.TransferService;
 import java.io.IOException;
@@ -39,12 +40,12 @@ public class AccountsServlet extends HttpServlet {
                     final Account fromAccount = accountsRepository.account(fromAccountId).orElseThrow(() -> new TransferException("Source account not found, id=" + fromAccountId));
                     final Account toAccount = accountsRepository.account(toAccountId).orElseThrow(() -> new TransferException("Destination account not found id=" + toAccountId));
                     transferDelegate.transfer(fromAccount, toAccount, amount);
-                } catch (TransferException ex) {
+                } catch (TransferException | NotAuhtorizedException ex) {
                     Logger.getLogger(AccountsServlet.class.getName()).log(Level.WARNING, ex.getMessage());
                     response.getWriter().println("ERR:" + ex.getMessage());
                     response.setStatus(HttpServletResponse.SC_CONFLICT);
                     return;
-                }
+                } 
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().println("OK"); 
                 return;

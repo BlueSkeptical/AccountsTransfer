@@ -13,5 +13,5 @@ public interface TransferService {
      * @param amount value to transfer
      * @throws TransferException if unable to transfer, the balances stay unchanged
      */
-    void transfer(Account from, Account to, long amount) throws TransferException;
+    void transfer(Account from, Account to, long amount) throws TransferException, NotAuhtorizedException;
 }
