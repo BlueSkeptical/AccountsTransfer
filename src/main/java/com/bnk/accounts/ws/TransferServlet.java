@@ -44,6 +44,5 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
         } 
         response.setStatus(HttpServletResponse.SC_OK);
         response.getWriter().println("OK"); 
-        return;
     }               
 }
