@@ -58,7 +58,6 @@ public class WebTransferServiceTests {
         //an attempt to transfer more than left on the account
         try {
             account0.transferTo(account2, 100);
-            transferService.transfer(account0, account2, 100);
             fail();
         } catch ( TransferException ex ) {
             assertTrue(ex.getMessage().contains("ERR"));
