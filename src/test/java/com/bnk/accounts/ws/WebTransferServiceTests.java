@@ -19,7 +19,7 @@ public class WebTransferServiceTests {
     
     @BeforeClass
     public static void setupEnvironment() throws Exception {   
-        transferService = new HttpClientTransferService(new InetSocketAddress("localhost", SERVER_PORT) );
+        transferService = new HttpClientTransferService(new InetSocketAddress("localhost", SERVER_PORT), "" );
         
         account0 = new DefaultAccount(0, 0, transferService);
         account1 = new DefaultAccount(1, 0, transferService);
@@ -33,10 +33,9 @@ public class WebTransferServiceTests {
             account2.deposit(300);
         }
          
-        serviceServer = new TransferServiceServer(SERVER_PORT, accountsRepository);
+        serviceServer = new TransferServiceServer(SERVER_PORT, "", accountsRepository);
         serviceServer.start(); 
     }
-    
     
     @Test
     public void should_correctly_perform_transfers_routine() throws TransferException, NotAuhtorizedException

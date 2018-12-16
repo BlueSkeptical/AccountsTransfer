@@ -20,10 +20,13 @@ public class TransferServiceServer {
     
     private final AccountsRepository accountsRepository;
     private final int port;
+    private final String basePath;
+    
     private Server server;
     
-    public TransferServiceServer(int port, AccountsRepository accountsRepository) {
+    public TransferServiceServer(int port, String basePath, AccountsRepository accountsRepository) {
         this.port = port;
+        this.basePath = basePath;
         this.accountsRepository = accountsRepository;
     }
 
@@ -37,7 +40,7 @@ public class TransferServiceServer {
         server.setConnectors(new Connector[] {connector});
         
         final ServletContextHandler context = new ServletContextHandler();
-        context.setContextPath("/" + HttpClientTransferService.ACCOUNTS_API_PATH); 
+        context.setContextPath("/" + basePath); 
         
         context.addServlet(new ServletHolder(new AccountsServlet(accountsRepository, new DefaultTransferService())),
                                                   "/*");
@@ -52,7 +55,7 @@ public class TransferServiceServer {
     
     public static void main(String[] args) throws Exception {
         final int p = args.length > 0 ? Integer.parseInt(args[0]) : DEFAULT_PORT;
-        final TransferServiceServer s = new TransferServiceServer(p, new SimpleAccountsRepository()); //TODO implement an accounts repository reading from some persistent store, e.g. a file
+        final TransferServiceServer s = new TransferServiceServer(p, "",  new SimpleAccountsRepository()); //TODO implement an accounts repository reading from some persistent store, e.g. a file
         s.start();
         s.join();
     }

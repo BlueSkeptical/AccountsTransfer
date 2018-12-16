@@ -19,7 +19,7 @@ public class TransferServiceTests {
     }
     
     @Test(expected = TransferException.class)
-    public void should_throw_exception_when_amount_on_source_account_is_not_enough() throws TransferException {
+    public void should_throw_exception_when_amount_on_source_account_is_not_enough() throws TransferException, NotAuhtorizedException {
         final TransferService transferService = new DefaultTransferService();
         
         final Account account0 = new DefaultAccount(0, 100, transferService);
@@ -47,7 +47,7 @@ public class TransferServiceTests {
     }
     
     @Test(expected = TransferException.class)
-    public void should_throw_exception_when_amount_on_destination_account_after_transfer_will_cause_overflow() throws TransferException {
+    public void should_throw_exception_when_amount_on_destination_account_after_transfer_will_cause_overflow() throws TransferException, NotAuhtorizedException {
         final TransferService transferService = new DefaultTransferService();
         
         final Account account0 = new DefaultAccount(0, 100, transferService);
