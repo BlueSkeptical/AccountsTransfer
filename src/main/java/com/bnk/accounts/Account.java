@@ -7,7 +7,7 @@ package com.bnk.accounts;
 public interface Account {
     
     /**
-     * The account's unique ID
+     * The account unique ID
      * @return integer ID
      */
     int id();
@@ -20,16 +20,16 @@ public interface Account {
     long balance() throws NotAuhtorizedException;
 
     /**
-     * The operation to put some amount on the account
-     * @param value
+     * The operation to add some amount to this account
+     * @param value to add
      * @throws NotAuhtorizedException
      * @throws TransferException 
      */
     void deposit(long value) throws NotAuhtorizedException, TransferException;
     
     /**
-     * The operation to remove some amount from the account
-     * @param value
+     * The operation to remove some amount from this account
+     * @param value to take from 
      * @throws NotAuhtorizedException
      * @throws TransferException 
      */
@@ -38,8 +38,8 @@ public interface Account {
     
     /**
      * The operation to move some value from one account to an another
-     * @param to
-     * @param value
+     * @param to account to send value
+     * @param value to move from this account to an another  
      * @throws NotAuhtorizedException
      * @throws TransferException 
      */

@@ -15,11 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-public class AccountsServlet extends HttpServlet {
+public class TransferServlet extends HttpServlet {
     private final AccountsRepository accountsRepository;
     private final TransferService transferDelegate;
     
-    public AccountsServlet(AccountsRepository accountsRepository, TransferService transferDelegate) {
+    public TransferServlet(AccountsRepository accountsRepository, TransferService transferDelegate) {
         this.accountsRepository = accountsRepository;
         this.transferDelegate = transferDelegate;
     }
@@ -37,7 +37,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
                 transferDelegate.transfer(fromAccount, toAccount, amount);
             }
         } catch (TransferException | NotAuhtorizedException ex) {
-            Logger.getLogger(AccountsServlet.class.getName()).log(Level.WARNING, ex.getMessage());
+            Logger.getLogger(TransferServlet.class.getName()).log(Level.WARNING, ex.getMessage());
             response.getWriter().println("ERR:" + ex.getMessage());
             response.setStatus(HttpServletResponse.SC_CONFLICT);
             return;

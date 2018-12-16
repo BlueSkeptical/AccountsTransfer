@@ -35,6 +35,7 @@ public class TransferServiceServer {
         threadPool.setMaxThreads(MAX_THREADS);
         
         server = new Server(threadPool);
+        
         final ServerConnector connector = new ServerConnector(server);
         connector.setPort(port);
         server.setConnectors(new Connector[] {connector});
@@ -42,8 +43,8 @@ public class TransferServiceServer {
         final ServletContextHandler context = new ServletContextHandler();
         context.setContextPath("/" + basePath); 
         
-        context.addServlet(new ServletHolder(new AccountsServlet(accountsRepository, new DefaultTransferService())),
-                                                  "/*");
+        context.addServlet(new ServletHolder(new TransferServlet(accountsRepository, new DefaultTransferService())),
+                                             "/*");
         
         server.setHandler(context);
         server.start();    
