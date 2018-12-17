@@ -33,7 +33,7 @@ public class WebTransferServiceTests {
             account2.deposit(300);
         }
          
-        serviceServer = new TransferServiceServer(SERVER_PORT, "", accountsRepository);
+        serviceServer = new TransferServiceServer(SERVER_PORT, "", accountsRepository, new DefaultTransferService());
         serviceServer.start(); 
     }
     

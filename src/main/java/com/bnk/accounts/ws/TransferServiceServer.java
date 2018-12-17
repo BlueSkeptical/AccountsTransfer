@@ -21,15 +21,17 @@ public class TransferServiceServer {
     private static final int MAX_THREADS = 50;
     
     private final AccountsRepository accountsRepository;
+    private final TransferService transferService;
     private final int port;
     private final String basePath;
     
     private Server server;
     
-    public TransferServiceServer(int port, String basePath, AccountsRepository accountsRepository) {
+    public TransferServiceServer(int port, String basePath, AccountsRepository accountsRepository, TransferService transferService) {
         this.port = port;
         this.basePath = basePath;
         this.accountsRepository = accountsRepository;
+        this.transferService = transferService;
     }
 
     public void start() throws Exception {
@@ -45,7 +47,7 @@ public class TransferServiceServer {
         final ServletContextHandler context = new ServletContextHandler();
         context.setContextPath("/" + basePath); 
         
-        context.addServlet(new ServletHolder(new TransferServlet(accountsRepository, new DefaultTransferService())),
+        context.addServlet(new ServletHolder(new TransferServlet(accountsRepository, transferService)),
                                              "/*");
         
         server.setHandler(context);
@@ -63,7 +65,7 @@ public class TransferServiceServer {
                                                                    new DefaultAccount(10002, 0, ts),
                                                                    new DefaultAccount(10003, 2000, ts) );
         
-        final TransferServiceServer s = new TransferServiceServer(p, "",  ar); //TODO implement an accounts repository reading from some persistent store, e.g. a file
+        final TransferServiceServer s = new TransferServiceServer(p, "",  ar, ts); //TODO implement an accounts repository reading from some persistent store, e.g. a file
         s.start();
         s.join();
     }
