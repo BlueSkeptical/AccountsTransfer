@@ -1,8 +1,10 @@
 package com.bnk.accounts.ws;
 
 import com.bnk.accounts.AccountsRepository;
+import com.bnk.accounts.DefaultAccount;
 import com.bnk.accounts.DefaultTransferService;
 import com.bnk.accounts.SimpleAccountsRepository;
+import com.bnk.accounts.TransferService;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -56,7 +58,12 @@ public class TransferServiceServer {
     
     public static void main(String[] args) throws Exception {
         final int p = args.length > 0 ? Integer.parseInt(args[0]) : DEFAULT_PORT;
-        final TransferServiceServer s = new TransferServiceServer(p, "",  new SimpleAccountsRepository()); //TODO implement an accounts repository reading from some persistent store, e.g. a file
+        final TransferService ts = new DefaultTransferService();
+        final AccountsRepository ar = new SimpleAccountsRepository(new DefaultAccount(10001, 1000, ts),
+                                                                   new DefaultAccount(10002, 0, ts),
+                                                                   new DefaultAccount(10003, 2000, ts) );
+        
+        final TransferServiceServer s = new TransferServiceServer(p, "",  ar); //TODO implement an accounts repository reading from some persistent store, e.g. a file
         s.start();
         s.join();
     }
