@@ -25,9 +25,6 @@ public interface Result<T> {
         }
     }
     
- 
-    
-    
     class Success<T> implements Result<T> {
         public final T resultValue;
         
