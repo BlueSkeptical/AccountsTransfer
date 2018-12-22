@@ -1,9 +1,5 @@
 package com.bnk.accounts;
 
-/**
- * An implementation of an account, 
- * with the balance that cannot be negative
- */
 public class DefaultAccount implements Account {
     
     public static long MAX_VALUE = Long.MAX_VALUE;
