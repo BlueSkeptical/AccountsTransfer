@@ -1,5 +1,7 @@
 package com.bnk.accounts;
 
+import com.bnk.utils.Result;
+
 /**
  * An API for transferring value between two accounts
  */
@@ -11,8 +13,7 @@ public interface TransferService {
      * @param from id of the source Account
      * @param to id of the destination Account
      * @param amount value to transfer
-     * @throws TransferException if unable to transfer, the balances stay unchanged
-     * @throws com.bnk.accounts.NotAuhtorizedException
+     * @return 
      */
-    void transfer(Account from, Account to, Value amount) throws TransferException, NotAuhtorizedException;
+    Result<com.bnk.utils.Void> transfer(Account from, Account to, Value amount);
 }

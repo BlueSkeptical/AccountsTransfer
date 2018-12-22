@@ -1,5 +1,6 @@
 package com.bnk.accounts;
 
+import com.bnk.utils.Result;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
@@ -20,7 +21,7 @@ public class SimpleAccountsRepository implements AccountsRepository {
     }
 
     @Override
-    public Optional<Account> account(int id) {
-        return accounts.stream().filter( p -> p.id() == id ).findFirst();
+    public Result<Account> account(int id) {
+        return Result.of(accounts.stream().filter( p -> p.id() == id ).findFirst());
     }
 }

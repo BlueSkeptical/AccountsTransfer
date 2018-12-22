@@ -1,6 +1,8 @@
 package com.bnk.accounts;
 
+import com.bnk.utils.Result;
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * Inter account transfer logic
@@ -20,19 +22,27 @@ public class Transfer {
         this.amount = amount;
     }
     
-    public void execute() throws TransferException, NotAuhtorizedException {
-        
-        if (from.balance().substract(amount).compareTo(Value.ZERO) < 0) {
-            throw new TransferException("Not enough value on the account");
-        } 
-        
-        if (to.balance().compareTo(Value.MAX.substract(amount)) > 0) {
-            throw new TransferException("Transfer will cause account overflow");
-        }
-        
-        
-        from.withdraw(amount);
-        to.deposit(amount);
+    public Result<Void> execute() {
+        return isAllowed(amount).mapValue(allowed -> allowed ? transfer() : new Result.Fail<>(new TransferException("Transfer is not allowed")));
     }
     
+    private Result<Boolean> isAllowed(Value amount) {
+        Result<Boolean> result =  canWithdraw(amount).mapValue(cw -> canDeposit(amount).mapValue(cd -> new Result.Success<>(cw && cd)));
+        return result;
+    }
+    
+    private Result<Boolean> canWithdraw(Value amount) {
+        return from.balance().mapValue(v -> new Result.Success<>(v.substract(amount).compareTo(Value.ZERO) >= 0));
+    }
+    
+    private  Result<Boolean> canDeposit(Value amount) {
+        return to.balance().mapValue(v -> new Result.Success<>(v.compareTo(Value.MAX.substract(amount)) < 0));
+    }
+    
+    private Result<Void> transfer() {
+        from.withdraw(amount);
+        to.deposit(amount);
+        
+        return new Result.Success<>();
+    }
 }

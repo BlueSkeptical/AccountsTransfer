@@ -1,5 +1,6 @@
 package com.bnk.accounts;
 
+import com.bnk.utils.Result;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -12,48 +13,42 @@ public class TransferServiceTests {
         final Account account0 = new DefaultAccount(0, new Value(100), transferService);
         final Account account1 = new DefaultAccount(1, new Value(200), transferService);
         
-        account0.transferTo(account1, new Value(10));
+        final Result<Void> result = account0.transferTo(account1, new Value(10));
         
-        assertEquals(new Value(90), account0.balance());
-        assertEquals(new Value(210), account1.balance());
+        assertEquals(new Result.Success<>(), result);
+        
+        
+        assertEquals(new Result.Success<>(new Value(90)), account0.balance());
+        assertEquals(new Result.Success<>(new Value(210)), account1.balance());
     }
     
-    @Test(expected = TransferException.class)
-    public void should_throw_exception_when_amount_on_source_account_is_not_enough() throws TransferException, NotAuhtorizedException {
+    
+    @Test
+    public void should_keep_old_balance_after_exception_when_amount_on_source_account_is_not_enough() {
         final TransferService transferService = new DefaultTransferService();
         
         final Account account0 = new DefaultAccount(0, new Value(100), transferService);
         final Account account1 = new DefaultAccount(1, new Value(200), transferService);
         
-        account0.transferTo(account1, new Value(101));
+        
+
+        final Result<Void> result = account0.transferTo(account1, new Value(101));
+        
+        assertEquals(new Result.Fail<>(new TransferException()), result);
+
+        assertEquals(new Result.Success<>(new Value(100)), account0.balance());
+        assertEquals(new Result.Success<>(new Value(200)), account1.balance());
     }
     
     @Test
-    public void should_keep_old_balance_after_exception_when_amount_on_source_account_is_not_enough() throws NotAuhtorizedException {
+    public void should_throw_exception_when_amount_on_destination_account_after_transfer_will_cause_overflow() {
         final TransferService transferService = new DefaultTransferService();
         
-        final Account account0 = new DefaultAccount(0, new Value(100), transferService);
-        final Account account1 = new DefaultAccount(1, new Value(200), transferService);
-        
-        
-        try {
-            account0.transferTo(account1, new Value(101));
-        } catch (TransferException ex) {
-            //NO-OP
-        }
-
-        assertEquals(new Value(100), account0.balance());
-        assertEquals(new Value(200), account1.balance());
-    }
-    
-    @Test(expected = TransferException.class)
-    public void should_throw_exception_when_amount_on_destination_account_after_transfer_will_cause_overflow() throws TransferException, NotAuhtorizedException {
-        final TransferService transferService = new DefaultTransferService();
-        
-        final Account account0 = new DefaultAccount(0, new Value(100), transferService);
+        final Account account0 = new DefaultAccount(0, new Value(101), transferService);
         final Account account1 = new DefaultAccount(1, new Value(DefaultAccount.MAX_VALUE - 99), transferService);
         
-        account0.transferTo(account1, new Value(101));
+        final Result<Void> result = account0.transferTo(account1, new Value(101));
+        assertEquals(new Result.Fail<>(new TransferException()), result);
     }
    
 }

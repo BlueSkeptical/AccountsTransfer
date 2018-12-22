@@ -1,5 +1,7 @@
 package com.bnk.accounts;
 
+import com.bnk.utils.Result;
+
 public class DefaultAccount implements Account {
     
     public static long MAX_VALUE = Long.MAX_VALUE;
@@ -22,24 +24,26 @@ public class DefaultAccount implements Account {
     }
 
     @Override
-    public Value balance() {
-        return balance;
+    public Result<Value> balance() {
+        return new Result.Success<Value>(balance);
     }
 
     @Override
-    public void deposit(Value value) throws TransferException {
+    public Result<Void> deposit(Value value) {
         balance = balance.add(value);
+        return new Result.Success<>();
     }
     
     
     @Override
-    public void withdraw(Value value) throws TransferException {
+    public Result<Void> withdraw(Value value){
         balance = balance.substract(value);
+        return new Result.Success<>();
     }
 
     @Override
-    public void transferTo(Account to, Value value) throws TransferException,NotAuhtorizedException {
-       transferService.transfer(this, to, value);
+    public Result<Void> transferTo(Account to, Value value) {
+       return transferService.transfer(this, to, value);
     }
     
 }

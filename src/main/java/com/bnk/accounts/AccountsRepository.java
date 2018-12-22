@@ -1,6 +1,6 @@
 package com.bnk.accounts;
 
-import java.util.Optional;
+import com.bnk.utils.Result;
 
 /**
  * A service for retrieving accounts
@@ -12,5 +12,5 @@ public interface AccountsRepository
      * @param id ID
      * @return an instance of Account
      */
-    Optional<Account> account(int id);
+    Result<Account> account(int id);
 }

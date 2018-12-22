@@ -3,10 +3,9 @@ package com.bnk.accounts.ws;
 
 import com.bnk.accounts.Account;
 import com.bnk.accounts.AccountsRepository;
-import com.bnk.accounts.NotAuhtorizedException;
-import com.bnk.accounts.TransferException;
 import com.bnk.accounts.TransferService;
 import com.bnk.accounts.Value;
+import com.bnk.utils.Result;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,19 +29,32 @@ public class TransferServlet extends HttpServlet {
         final int fromAccountId = Integer.parseInt(request.getParameter(HttpClientTransferService.FROM_ACCOUNT_PARAMETER_NAME));
         final int toAccountId = Integer.parseInt(request.getParameter(HttpClientTransferService.TO_ACCOUNT_PARAMETER_NAME));
         final Value amount = new Value(Long.parseLong(request.getParameter(HttpClientTransferService.AMOUNT_PARAMETER_NAME)));
-            try {
-                final Account fromAccount = accountsRepository.account(fromAccountId).orElseThrow(() -> new TransferException("Source account not found, id=" + fromAccountId));
-                final Account toAccount = accountsRepository.account(toAccountId).orElseThrow(() -> new TransferException("Destination account not found id=" + toAccountId));
-                synchronized(accountsRepository) {  
-                    transferDelegate.transfer(fromAccount, toAccount, amount);
-                }
-            } catch (TransferException | NotAuhtorizedException ex) {
-                Logger.getLogger(TransferServlet.class.getName()).log(Level.WARNING, ex.getMessage());
-                response.getWriter().println("ERR:" + ex.getMessage());
-                response.setStatus(HttpServletResponse.SC_CONFLICT);
-                return;
-            } 
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().println("OK"); 
-    }               
+        final Result<Account> fromAccount = accountsRepository.account(fromAccountId);
+        final Result<Account> toAccount = accountsRepository.account(toAccountId);
+        synchronized(accountsRepository) {  
+            fromAccount.with(toAccount, from -> to -> { transfer(from, to, amount, response); 
+                                                       return new Result.Success(); });
+            
+        }
+    } 
+    
+    private void transfer(Account from, Account to, Value amount, HttpServletResponse response) {
+        transferDelegate.transfer(from, to, amount)
+                        .verify((v) -> {
+                            response.setStatus(HttpServletResponse.SC_OK);
+                            println(response, "OK");
+                        }, (ex) -> {
+                            Logger.getLogger(TransferServlet.class.getName()).log(Level.WARNING, ex.getMessage());
+                            println(response, "ERR:" + ex.getMessage());
+                            response.setStatus(HttpServletResponse.SC_CONFLICT);
+                        });
+    }
+    
+    private void println(HttpServletResponse response, String str) {
+        try { 
+            response.getWriter().println(str);
+        } catch (IOException ex) {
+            Logger.getLogger(TransferServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

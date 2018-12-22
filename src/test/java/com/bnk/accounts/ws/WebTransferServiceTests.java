@@ -1,6 +1,7 @@
 package com.bnk.accounts.ws;
 
 import com.bnk.accounts.*;
+import com.bnk.utils.Result;
 import java.net.InetSocketAddress;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
@@ -42,29 +43,26 @@ public class WebTransferServiceTests {
     {
         account0.transferTo(account1, new Value(10));
         synchronized(accountsRepository) {
-            assertEquals(new Value(90), account0.balance());
-            assertEquals(new Value(210), account1.balance());
-            assertEquals(new Value(300), account2.balance());
+            assertEquals(new Result.Success<>(new Value(90)), account0.balance());
+            assertEquals(new Result.Success<>(new Value(210)), account1.balance());
+            assertEquals(new Result.Success<>(new Value(300)), account2.balance());
         }
         
         account1.transferTo(account2, new Value(10));
         synchronized(accountsRepository) {
-            assertEquals(new Value(90), account0.balance());
-            assertEquals(new Value(200), account1.balance());
-            assertEquals(new Value(310), account2.balance());
+            assertEquals(new Result.Success<>(new Value(90)), account0.balance());
+            assertEquals(new Result.Success<>(new Value(200)), account1.balance());
+            assertEquals(new Result.Success<>(new Value(310)), account2.balance());
         }
         
         //an attempt to transfer more than left on the account
-        try {
-            account0.transferTo(account2, new Value(100));
-            fail();
-        } catch ( TransferException ex ) {
-            assertTrue(ex.getMessage().contains("ERR"));
-        }
+        assertEquals(new Result.Fail<>(new TransferException()),
+                     account0.transferTo(account2, new Value(100)));
+   
         synchronized(accountsRepository) {
-            assertEquals(new Value(90), account0.balance());
-            assertEquals(new Value(200), account1.balance());
-            assertEquals(new Value(310), account2.balance());
+            assertEquals(new Result.Success<>(new Value(90)), account0.balance());
+            assertEquals(new Result.Success<>(new Value(200)), account1.balance());
+            assertEquals(new Result.Success<>(new Value(310)), account2.balance());
         }
     }
 }
