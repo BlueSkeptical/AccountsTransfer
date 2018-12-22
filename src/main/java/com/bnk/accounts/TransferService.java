@@ -15,5 +15,5 @@ public interface TransferService {
      * @param amount value to transfer
      * @return 
      */
-    Result<com.bnk.utils.Void> transfer(Account from, Account to, Value amount);
+    Result<Result.Void> transfer(Account from, Account to, Value amount);
 }

@@ -18,6 +18,16 @@ public interface Result<T> {
         return optional.isPresent() ? new Result.Success<>(optional.get()) : new Result.Fail<>(new NullPointerException());
     }
     
+    interface Void { 
+        static Void INSTANCE = new JustVoid();
+        
+        class JustVoid implements Void {
+        }
+    }
+    
+ 
+    
+    
     class Success<T> implements Result<T> {
         public final T resultValue;
         

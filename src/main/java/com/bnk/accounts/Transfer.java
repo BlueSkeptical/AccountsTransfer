@@ -22,7 +22,7 @@ public class Transfer {
         this.amount = amount;
     }
     
-    public Result<Void> execute() {
+    public Result<Result.Void> execute() {
         return isAllowed(amount).mapValue(allowed -> allowed ? transfer() : new Result.Fail<>(new TransferException("Transfer is not allowed")));
     }
     
@@ -39,7 +39,7 @@ public class Transfer {
         return to.balance().mapValue(v -> new Result.Success<>(v.compareTo(Value.MAX.substract(amount)) < 0));
     }
     
-    private Result<Void> transfer() {
+    private Result<Result.Void> transfer() {
         from.withdraw(amount);
         to.deposit(amount);
         

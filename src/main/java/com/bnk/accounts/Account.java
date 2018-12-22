@@ -24,14 +24,14 @@ public interface Account {
      * @param value to add
      * @return 
      */
-    Result<Void> deposit(Value value);
+    Result<Result.Void> deposit(Value value);
     
     /**
      * The operation to remove some amount from this account
      * @param value to take from 
      * @return  
      */
-    Result<Void> withdraw(Value value);
+    Result<Result.Void> withdraw(Value value);
     
     
     /**
@@ -40,5 +40,5 @@ public interface Account {
      * @param value to move from this account to an another  
      * @return   
      */
-    Result<Void> transferTo(Account to, Value value);
+    Result<Result.Void> transferTo(Account to, Value value);
 }

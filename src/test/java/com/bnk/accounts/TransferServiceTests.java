@@ -13,7 +13,7 @@ public class TransferServiceTests {
         final Account account0 = new DefaultAccount(0, new Value(100), transferService);
         final Account account1 = new DefaultAccount(1, new Value(200), transferService);
         
-        final Result<Void> result = account0.transferTo(account1, new Value(10));
+        final Result<Result.Void> result = account0.transferTo(account1, new Value(10));
         
         assertEquals(new Result.Success<>(), result);
         
@@ -32,7 +32,7 @@ public class TransferServiceTests {
         
         
 
-        final Result<Void> result = account0.transferTo(account1, new Value(101));
+        final Result<Result.Void> result = account0.transferTo(account1, new Value(101));
         
         assertEquals(new Result.Fail<>(new TransferException()), result);
 
@@ -47,7 +47,7 @@ public class TransferServiceTests {
         final Account account0 = new DefaultAccount(0, new Value(101), transferService);
         final Account account1 = new DefaultAccount(1, new Value(DefaultAccount.MAX_VALUE - 99), transferService);
         
-        final Result<Void> result = account0.transferTo(account1, new Value(101));
+        final Result<Result.Void> result = account0.transferTo(account1, new Value(101));
         assertEquals(new Result.Fail<>(new TransferException()), result);
     }
    

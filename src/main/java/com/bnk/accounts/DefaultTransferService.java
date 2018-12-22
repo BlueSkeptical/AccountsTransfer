@@ -8,7 +8,7 @@ import com.bnk.utils.Result;
 public class DefaultTransferService implements TransferService {
  
     @Override 
-    public Result<com.bnk.utils.Void> transfer(Account from, Account to, Value amount) {
+    public Result<Result.Void> transfer(Account from, Account to, Value amount) {
         return new Transfer(from, to, amount).execute();      
     }
 }

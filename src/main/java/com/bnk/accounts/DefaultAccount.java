@@ -29,20 +29,20 @@ public class DefaultAccount implements Account {
     }
 
     @Override
-    public Result<Void> deposit(Value value) {
+    public Result<Result.Void> deposit(Value value) {
         balance = balance.add(value);
         return new Result.Success<>();
     }
     
     
     @Override
-    public Result<Void> withdraw(Value value){
+    public Result<Result.Void> withdraw(Value value){
         balance = balance.substract(value);
         return new Result.Success<>();
     }
 
     @Override
-    public Result<Void> transferTo(Account to, Value value) {
+    public Result<Result.Void> transferTo(Account to, Value value) {
        return transferService.transfer(this, to, value);
     }
     

@@ -39,7 +39,7 @@ public class HttpClientTransferService implements TransferService {
      * {@inheritDoc}
      */
     @Override
-    public Result<com.bnk.utils.Void> transfer(Account from, Account to, Value amount){
+    public Result<Result.Void> transfer(Account from, Account to, Value amount){
         try {
             final URL url = new URL( "http://" 
                                     + address.getHostString() + ":" + address.getPort()
