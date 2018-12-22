@@ -9,9 +9,9 @@ public class Transfer {
     
     private final Account from;
     private final Account to;
-    private final long amount;
+    private final Value amount;
     
-    public Transfer(Account from, Account to, long amount)
+    public Transfer(Account from, Account to, Value amount)
     {
         Objects.requireNonNull(from);
         this.from = from;
@@ -21,6 +21,15 @@ public class Transfer {
     }
     
     public void execute() throws TransferException, NotAuhtorizedException {
+        
+        if (from.balance().substract(amount).compareTo(Value.ZERO) < 0) {
+            throw new TransferException("Not enough value on the account");
+        } 
+        
+        if (to.balance().compareTo(Value.MAX.substract(amount)) > 0) {
+            throw new TransferException("Transfer will cause account overflow");
+        }
+        
         
         from.withdraw(amount);
         to.deposit(amount);

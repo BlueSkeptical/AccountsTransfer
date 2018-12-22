@@ -16,7 +16,7 @@ public interface Account {
      * @return a long integer number representing number of minimal fractional monetary units
      * @throws NotAuhtorizedException if not allowed to read balance
      */
-    long balance() throws NotAuhtorizedException;
+    Value balance() throws NotAuhtorizedException;
 
     /**
      * The operation to add some amount to this account
@@ -24,7 +24,7 @@ public interface Account {
      * @throws NotAuhtorizedException
      * @throws TransferException 
      */
-    void deposit(long value) throws NotAuhtorizedException, TransferException;
+    void deposit(Value value) throws NotAuhtorizedException, TransferException;
     
     /**
      * The operation to remove some amount from this account
@@ -32,7 +32,7 @@ public interface Account {
      * @throws NotAuhtorizedException
      * @throws TransferException 
      */
-    void withdraw(long value) throws NotAuhtorizedException, TransferException;
+    void withdraw(Value value) throws NotAuhtorizedException, TransferException;
     
     
     /**
@@ -42,5 +42,5 @@ public interface Account {
      * @throws NotAuhtorizedException
      * @throws TransferException 
      */
-    void transferTo(Account to, long value) throws NotAuhtorizedException, TransferException;
+    void transferTo(Account to, Value value) throws NotAuhtorizedException, TransferException;
 }

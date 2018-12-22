@@ -6,6 +6,7 @@ import com.bnk.accounts.AccountsRepository;
 import com.bnk.accounts.NotAuhtorizedException;
 import com.bnk.accounts.TransferException;
 import com.bnk.accounts.TransferService;
+import com.bnk.accounts.Value;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,7 +29,7 @@ public class TransferServlet extends HttpServlet {
         response.setContentType(HttpClientTransferService.CONTENT_TYPE);
         final int fromAccountId = Integer.parseInt(request.getParameter(HttpClientTransferService.FROM_ACCOUNT_PARAMETER_NAME));
         final int toAccountId = Integer.parseInt(request.getParameter(HttpClientTransferService.TO_ACCOUNT_PARAMETER_NAME));
-        final long amount = Long.parseLong(request.getParameter(HttpClientTransferService.AMOUNT_PARAMETER_NAME));
+        final Value amount = new Value(Long.parseLong(request.getParameter(HttpClientTransferService.AMOUNT_PARAMETER_NAME)));
             try {
                 final Account fromAccount = accountsRepository.account(fromAccountId).orElseThrow(() -> new TransferException("Source account not found, id=" + fromAccountId));
                 final Account toAccount = accountsRepository.account(toAccountId).orElseThrow(() -> new TransferException("Destination account not found id=" + toAccountId));

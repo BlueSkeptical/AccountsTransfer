@@ -21,16 +21,16 @@ public class WebTransferServiceTests {
     public static void setupEnvironment() throws Exception {   
         transferService = new HttpClientTransferService(new InetSocketAddress("localhost", SERVER_PORT), "" );
         
-        account0 = new DefaultAccount(0, 0, transferService);
-        account1 = new DefaultAccount(1, 0, transferService);
-        account2 = new DefaultAccount(2, 0, transferService);
+        account0 = new DefaultAccount(0, Value.ZERO, transferService);
+        account1 = new DefaultAccount(1, Value.ZERO, transferService);
+        account2 = new DefaultAccount(2, Value.ZERO, transferService);
         
         accountsRepository = new SimpleAccountsRepository(account0, account1, account2);
         
         synchronized(accountsRepository) {
-            account0.deposit(100);
-            account1.deposit(200);
-            account2.deposit(300);
+            account0.deposit(new Value(100));
+            account1.deposit(new Value(200));
+            account2.deposit(new Value(300));
         }
          
         serviceServer = new TransferServiceServer(SERVER_PORT, "", accountsRepository, new DefaultTransferService());
@@ -40,31 +40,31 @@ public class WebTransferServiceTests {
     @Test
     public void should_correctly_perform_transfers_routine() throws TransferException, NotAuhtorizedException
     {
-        account0.transferTo(account1, 10);
+        account0.transferTo(account1, new Value(10));
         synchronized(accountsRepository) {
-            assertEquals(90, account0.balance());
-            assertEquals(210, account1.balance());
-            assertEquals(300, account2.balance());
+            assertEquals(new Value(90), account0.balance());
+            assertEquals(new Value(210), account1.balance());
+            assertEquals(new Value(300), account2.balance());
         }
         
-        account1.transferTo(account2, 10);
+        account1.transferTo(account2, new Value(10));
         synchronized(accountsRepository) {
-            assertEquals(90, account0.balance());
-            assertEquals(200, account1.balance());
-            assertEquals(310, account2.balance());
+            assertEquals(new Value(90), account0.balance());
+            assertEquals(new Value(200), account1.balance());
+            assertEquals(new Value(310), account2.balance());
         }
         
         //an attempt to transfer more than left on the account
         try {
-            account0.transferTo(account2, 100);
+            account0.transferTo(account2, new Value(100));
             fail();
         } catch ( TransferException ex ) {
             assertTrue(ex.getMessage().contains("ERR"));
         }
         synchronized(accountsRepository) {
-            assertEquals(90, account0.balance());
-            assertEquals(200, account1.balance());
-            assertEquals(310, account2.balance());
+            assertEquals(new Value(90), account0.balance());
+            assertEquals(new Value(200), account1.balance());
+            assertEquals(new Value(310), account2.balance());
         }
     }
 }

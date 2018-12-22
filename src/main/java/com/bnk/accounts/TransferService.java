@@ -14,5 +14,5 @@ public interface TransferService {
      * @throws TransferException if unable to transfer, the balances stay unchanged
      * @throws com.bnk.accounts.NotAuhtorizedException
      */
-    void transfer(Account from, Account to, long amount) throws TransferException, NotAuhtorizedException;
+    void transfer(Account from, Account to, Value amount) throws TransferException, NotAuhtorizedException;
 }

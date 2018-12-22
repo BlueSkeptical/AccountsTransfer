@@ -3,6 +3,7 @@ package com.bnk.accounts.ws;
 import com.bnk.accounts.Account;
 import com.bnk.accounts.TransferException;
 import com.bnk.accounts.TransferService;
+import com.bnk.accounts.Value;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -37,7 +38,7 @@ public class HttpClientTransferService implements TransferService {
      * {@inheritDoc}
      */
     @Override
-    public void transfer(Account from, Account to, long amount) throws TransferException {
+    public void transfer(Account from, Account to, Value amount) throws TransferException {
         try {
             final URL url = new URL( "http://" 
                                     + address.getHostString() + ":" + address.getPort()

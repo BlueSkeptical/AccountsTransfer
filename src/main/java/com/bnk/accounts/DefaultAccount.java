@@ -9,10 +9,12 @@ public class DefaultAccount implements Account {
     public static long MAX_VALUE = Long.MAX_VALUE;
     
     private final int id;
-    private long balance;
-    private TransferService transferService;
+    private final TransferService transferService;
     
-    public DefaultAccount(int id, long initilalBalance, TransferService transferService) {
+    private Value balance;
+    
+    
+    public DefaultAccount(int id, Value initilalBalance, TransferService transferService) {
         this.id = id;
         this.balance = initilalBalance;
         this.transferService = transferService;
@@ -24,29 +26,23 @@ public class DefaultAccount implements Account {
     }
 
     @Override
-    public long balance() {
+    public Value balance() {
         return balance;
     }
 
     @Override
-    public void deposit(long value) throws TransferException {
-        if (MAX_VALUE - value < balance) {
-            throw new TransferException("Transfer will cause account overflow");
-        }
-        balance += value;
+    public void deposit(Value value) throws TransferException {
+        balance = balance.add(value);
     }
     
     
     @Override
-    public void withdraw(long value) throws TransferException {
-        if (balance - value < 0) {
-            throw new TransferException("Not enough value on the account");
-        }
-        balance -= value;
+    public void withdraw(Value value) throws TransferException {
+        balance = balance.substract(value);
     }
 
     @Override
-    public void transferTo(Account to, long value) throws TransferException,NotAuhtorizedException {
+    public void transferTo(Account to, Value value) throws TransferException,NotAuhtorizedException {
        transferService.transfer(this, to, value);
     }
     
