@@ -27,7 +27,7 @@ public class Transfer {
     }
     
     private Result<Boolean> isAllowed(Value amount) {
-        Result<Boolean> result =  canWithdraw(amount).mapValue(cw -> canDeposit(amount).mapValue(cd -> new Result.Success<>(cw && cd)));
+        Result<Boolean> result =  canWithdraw(amount).with(canDeposit(amount), cw -> cd -> new Result.Success<>(cw && cd));
         return result;
     }
     

@@ -3,7 +3,7 @@ package com.bnk.accounts;
 import com.bnk.utils.Result;
 
 /**
- * The simplest possible implementation of transfers executor
+ * An  
  */
 public class DefaultTransferService implements TransferService {
  
