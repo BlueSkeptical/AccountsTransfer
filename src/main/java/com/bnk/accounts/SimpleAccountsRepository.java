@@ -20,7 +20,7 @@ public class SimpleAccountsRepository implements AccountsRepository {
     }
 
     @Override
-    public Result<Account> account(int id) {
-        return Result.of(accounts.stream().filter( p -> p.id() == id ).findFirst());
+    public Result<Account> account(AccountNumber id) {
+        return Result.of(accounts.stream().filter( p -> p.id().num == id.num ).findFirst());
     }
 }

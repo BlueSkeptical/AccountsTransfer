@@ -2,6 +2,7 @@
 package com.bnk.accounts.ws;
 
 import com.bnk.accounts.Account;
+import com.bnk.accounts.AccountNumber;
 import com.bnk.accounts.AccountsRepository;
 import com.bnk.accounts.TransferService;
 import com.bnk.accounts.Value;
@@ -29,8 +30,8 @@ public class TransferServlet extends HttpServlet {
         final int fromAccountId = Integer.parseInt(request.getParameter(HttpClientTransferService.FROM_ACCOUNT_PARAMETER_NAME));
         final int toAccountId = Integer.parseInt(request.getParameter(HttpClientTransferService.TO_ACCOUNT_PARAMETER_NAME));
         final Value amount = new Value(Long.parseLong(request.getParameter(HttpClientTransferService.AMOUNT_PARAMETER_NAME)));
-        final Result<Account> fromAccount = accountsRepository.account(fromAccountId);
-        final Result<Account> toAccount = accountsRepository.account(toAccountId);
+        final Result<Account> fromAccount = accountsRepository.account(new AccountNumber(fromAccountId));
+        final Result<Account> toAccount = accountsRepository.account(new AccountNumber(toAccountId));
         synchronized(accountsRepository) {  
             fromAccount.with(toAccount, from -> to -> { transfer(from, to, amount, response); 
                                                        return new Result.Success(); });

@@ -12,5 +12,5 @@ public interface AccountsRepository
      * @param id ID
      * @return an instance of Account
      */
-    Result<Account> account(int id);
+    Result<Account> account(AccountNumber id);
 }

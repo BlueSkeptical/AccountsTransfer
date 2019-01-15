@@ -45,8 +45,8 @@ public class HttpClientTransferService implements TransferService {
                                     + address.getHostString() + ":" + address.getPort()
                                     + basePath 
                                     + "/" + TRANSFER_RESOURCE_NAME
-                                    + "?" + FROM_ACCOUNT_PARAMETER_NAME + "=" + from.id()
-                                    + "&" + TO_ACCOUNT_PARAMETER_NAME + "=" + to.id()
+                                    + "?" + FROM_ACCOUNT_PARAMETER_NAME + "=" + from.id().num
+                                    + "&" + TO_ACCOUNT_PARAMETER_NAME + "=" + to.id().num
                                     + "&" + AMOUNT_PARAMETER_NAME + "=" + amount);
             final HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 

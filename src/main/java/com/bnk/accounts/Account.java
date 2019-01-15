@@ -1,7 +1,5 @@
 package com.bnk.accounts;
 
-import com.bnk.utils.Result;
-
 /**
  * An account type
  */
@@ -11,7 +9,7 @@ public interface Account {
      * The account unique ID
      * @return integer ID
      */
-    int id();
+    AccountNumber id();
 
     
     /**

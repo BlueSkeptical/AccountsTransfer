@@ -6,19 +6,19 @@ public class DefaultAccount implements Account {
     
     public static long MAX_VALUE = Long.MAX_VALUE;
     
-    private final int id;
+    private final AccountNumber id;
     private final OwnerName ownerName;
     private Value balance;
     
     
-    public DefaultAccount(int id, OwnerName ownerName, Value initilalBalance) {
+    public DefaultAccount(AccountNumber id, OwnerName ownerName, Value initilalBalance) {
         this.id = id;
         this.ownerName = ownerName;
         this.balance = initilalBalance;
     }
 
     @Override
-    public int id() {
+    public AccountNumber id() {
         return id;
     }
 
