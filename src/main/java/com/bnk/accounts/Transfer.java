@@ -2,7 +2,6 @@ package com.bnk.accounts;
 
 import com.bnk.utils.Result;
 import java.util.Objects;
-import java.util.function.Function;
 
 /**
  * Inter account transfer logic
@@ -23,25 +22,25 @@ public class Transfer {
     }
     
     public Result<Result.Void> execute() {
-        return isAllowed(amount).mapValue(allowed -> allowed ? transfer() : new Result.Fail<>(new TransferException("Transfer is not allowed")));
+        return isAllowed(amount) ? transfer() : new Result.Fail<>(new TransferException("Transfer is not allowed"));
     }
     
-    private Result<Boolean> isAllowed(Value amount) {
-        Result<Boolean> result =  canWithdraw(amount).with(canDeposit(amount), cw -> cd -> new Result.Success<>(cw && cd));
+    private boolean isAllowed(Value amount) {
+        boolean result =  canWithdraw(amount) && canDeposit(amount);
         return result;
     }
     
-    private Result<Boolean> canWithdraw(Value amount) {
-        return from.balance().mapValue(v -> new Result.Success<>(v.substract(amount).compareTo(Value.ZERO) >= 0));
+    private boolean canWithdraw(Value amount) {
+        return from.balance().substract(amount).compareTo(Value.ZERO) >= 0;
     }
     
-    private  Result<Boolean> canDeposit(Value amount) {
-        return to.balance().mapValue(v -> new Result.Success<>(v.compareTo(Value.MAX.substract(amount)) < 0));
+    private  boolean canDeposit(Value amount) {
+        return to.balance().compareTo(Value.MAX.substract(amount)) < 0;
     }
     
     private Result<Result.Void> transfer() {
-        from.withdraw(amount);
-        to.deposit(amount);
+        from.setBalance( from.balance().substract(amount));
+        to.setBalance(to.balance().add(amount));
         
         return new Result.Success<>();
     }
