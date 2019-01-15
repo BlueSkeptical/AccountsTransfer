@@ -22,9 +22,9 @@ public class WebTransferServiceTests {
     public static void setupEnvironment() throws Exception {   
         transferService = new HttpClientTransferService(new InetSocketAddress("localhost", SERVER_PORT), "" );
         
-        account0 = new DefaultAccount(0, Value.ZERO, transferService);
-        account1 = new DefaultAccount(1, Value.ZERO, transferService);
-        account2 = new DefaultAccount(2, Value.ZERO, transferService);
+        account0 = new DefaultAccount(0,new OwnerName("Joe", "Doe"),  Value.ZERO, transferService);
+        account1 = new DefaultAccount(1, new OwnerName("Mary", "Smith"), Value.ZERO, transferService);
+        account2 = new DefaultAccount(2, new OwnerName("Jan", "Kowalski"), Value.ZERO, transferService);
         
         accountsRepository = new SimpleAccountsRepository(account0, account1, account2);
         

@@ -13,6 +13,14 @@ public interface Account {
      */
     int id();
 
+    
+    /**
+     * Owner's name
+     * 
+     * @return owner name
+     */
+    OwnerName ownerName();
+    
     /**
      * Current amount on the account
      * @return a long integer number representing number of minimal fractional monetary units

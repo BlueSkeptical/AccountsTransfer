@@ -7,13 +7,15 @@ public class DefaultAccount implements Account {
     public static long MAX_VALUE = Long.MAX_VALUE;
     
     private final int id;
+    private final OwnerName ownerName;
     private final TransferService transferService;
     
     private Value balance;
     
     
-    public DefaultAccount(int id, Value initilalBalance, TransferService transferService) {
+    public DefaultAccount(int id, OwnerName ownerName, Value initilalBalance, TransferService transferService) {
         this.id = id;
+        this.ownerName = ownerName;
         this.balance = initilalBalance;
         this.transferService = transferService;
     }
@@ -45,5 +47,15 @@ public class DefaultAccount implements Account {
     public Result<Result.Void> transferTo(Account to, Value value) {
        return transferService.transfer(this, to, value);
     }
+
+    @Override
+    public OwnerName ownerName() {
+        return ownerName;
+    }
     
+    
+    @Override
+    public String toString() {
+        return "Account # " + id + " Name: " + ownerName.firstName + " " + ownerName.secondName;
+    }
 }

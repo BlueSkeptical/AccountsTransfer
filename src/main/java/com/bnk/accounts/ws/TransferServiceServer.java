@@ -3,6 +3,7 @@ package com.bnk.accounts.ws;
 import com.bnk.accounts.AccountsRepository;
 import com.bnk.accounts.DefaultAccount;
 import com.bnk.accounts.DefaultTransferService;
+import com.bnk.accounts.OwnerName;
 import com.bnk.accounts.SimpleAccountsRepository;
 import com.bnk.accounts.TransferService;
 import com.bnk.accounts.Value;
@@ -62,9 +63,9 @@ public class TransferServiceServer {
     public static void main(String[] args) throws Exception {
         final int p = args.length > 0 ? Integer.parseInt(args[0]) : DEFAULT_PORT;
         final TransferService ts = new DefaultTransferService();
-        final AccountsRepository ar = new SimpleAccountsRepository(new DefaultAccount(10001, new Value(1000), ts),
-                                                                   new DefaultAccount(10002, new Value(0), ts),
-                                                                   new DefaultAccount(10003, new Value(2000), ts) );
+        final AccountsRepository ar = new SimpleAccountsRepository(new DefaultAccount(10001, new OwnerName("Joe", "Doe"), new Value(1000), ts),
+                                                                   new DefaultAccount(10002, new OwnerName("Mary", "Smith"), new Value(0), ts),
+                                                                   new DefaultAccount(10003, new OwnerName("Jan", "Kowalksi"), new Value(2000), ts) );
         
         final TransferServiceServer s = new TransferServiceServer(p, "",  ar, ts); //TODO implement an accounts repository reading from some persistent store, e.g. a file
         s.start();
