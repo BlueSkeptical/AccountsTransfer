@@ -15,5 +15,5 @@ public interface TransferService {
      * @param amount value to transfer
      * @return 
      */
-    Result<Result.Void> transfer(Account from, Account to, Value amount);
+    Result<Result.Void> transfer(AccountNumber from, AccountNumber to, Value amount);
 }

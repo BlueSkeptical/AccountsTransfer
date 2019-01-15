@@ -1,6 +1,7 @@
 package com.bnk.accounts.ws;
 
 import com.bnk.accounts.Account;
+import com.bnk.accounts.AccountNumber;
 import com.bnk.accounts.TransferException;
 import com.bnk.accounts.TransferService;
 import com.bnk.accounts.Value;
@@ -39,14 +40,14 @@ public class HttpClientTransferService implements TransferService {
      * {@inheritDoc}
      */
     @Override
-    public Result<Result.Void> transfer(Account from, Account to, Value amount){
+    public Result<Result.Void> transfer(AccountNumber from, AccountNumber to, Value amount){
         try {
             final URL url = new URL( "http://" 
                                     + address.getHostString() + ":" + address.getPort()
                                     + basePath 
                                     + "/" + TRANSFER_RESOURCE_NAME
-                                    + "?" + FROM_ACCOUNT_PARAMETER_NAME + "=" + from.id().num
-                                    + "&" + TO_ACCOUNT_PARAMETER_NAME + "=" + to.id().num
+                                    + "?" + FROM_ACCOUNT_PARAMETER_NAME + "=" + from.num
+                                    + "&" + TO_ACCOUNT_PARAMETER_NAME + "=" + to.num
                                     + "&" + AMOUNT_PARAMETER_NAME + "=" + amount);
             final HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 

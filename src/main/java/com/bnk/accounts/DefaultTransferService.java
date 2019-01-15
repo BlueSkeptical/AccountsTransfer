@@ -7,8 +7,15 @@ import com.bnk.utils.Result;
  */
 public class DefaultTransferService implements TransferService {
  
+    private final AccountsRepository repository;
+    
+    public DefaultTransferService(AccountsRepository repository) {
+       this.repository = repository; 
+    }
+    
     @Override 
-    public Result<Result.Void> transfer(Account from, Account to, Value amount) {
-        return new Transfer(from, to, amount).execute();      
+    public Result<Result.Void> transfer(AccountNumber from, AccountNumber to, Value amount) {
+        return repository.account(from).with(repository.account(to), f -> t -> new Transfer(f,t, amount).execute());
+     
     }
 }

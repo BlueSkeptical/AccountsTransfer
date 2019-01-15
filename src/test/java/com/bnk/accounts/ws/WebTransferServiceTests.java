@@ -28,21 +28,21 @@ public class WebTransferServiceTests {
         
         accountsRepository = new SimpleAccountsRepository(account0, account1, account2);
         
-        serviceServer = new TransferServiceServer(SERVER_PORT, "", accountsRepository, new DefaultTransferService());
+        serviceServer = new TransferServiceServer(SERVER_PORT, "", accountsRepository, new DefaultTransferService(accountsRepository));
         serviceServer.start(); 
     }
     
     @Test
     public void should_correctly_perform_transfers_routine()
     {
-        transferService.transfer(account0, account1, new Value(10));
+        transferService.transfer(account0.id(), account1.id(), new Value(10));
         synchronized(accountsRepository) {
             assertEquals(new Value(90), account0.balance());
             assertEquals(new Value(210), account1.balance());
             assertEquals(new Value(300), account2.balance());
         }
         
-        transferService.transfer(account1, account2, new Value(10));
+        transferService.transfer(account1.id(), account2.id(), new Value(10));
         synchronized(accountsRepository) {
             assertEquals(new Value(90), account0.balance());
             assertEquals(new Value(200), account1.balance());
@@ -51,7 +51,7 @@ public class WebTransferServiceTests {
         
         //an attempt to transfer more than left on the account
         assertEquals(new Result.Fail<>(new TransferException()),
-                     transferService.transfer(account0, account2, new Value(100)));
+                     transferService.transfer(account0.id(), account2.id(), new Value(100)));
    
         synchronized(accountsRepository) {
             assertEquals(new Value(90), account0.balance());
