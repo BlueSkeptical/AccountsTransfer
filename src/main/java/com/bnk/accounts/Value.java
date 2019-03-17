@@ -18,6 +18,10 @@ public class Value implements Comparable<Value> {
         return new Value(value - that.value);
     }
     
+    public Value negate() {
+        return new Value( -value );
+    }
+    
     @Override
     public String toString() {
         return Long.toString(value);

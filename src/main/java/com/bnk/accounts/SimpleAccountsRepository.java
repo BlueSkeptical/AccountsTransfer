@@ -1,8 +1,11 @@
 package com.bnk.accounts;
 
-import com.bnk.utils.Result;
+import com.bnk.utils.repository.Transaction;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -11,16 +14,32 @@ import java.util.Collection;
 public class SimpleAccountsRepository implements AccountsRepository {
     
     private final Collection<Account> accounts;
+    private final List<Order> ordersLog;
     
-    /**
-     * @param accounts should be provided on construction time
-     */
-    public SimpleAccountsRepository(Account... accounts) {
+
+    public SimpleAccountsRepository(List<Order> ordersLog, Account... accounts) {
+        this.ordersLog = new ArrayList<>(ordersLog);
         this.accounts = Arrays.asList(accounts);
     }
 
     @Override
-    public Result<Account> account(AccountNumber id) {
-        return Result.of(accounts.stream().filter( p -> p.id().num == id.num ).findFirst());
+    public Account account(AccountNumber number) {
+        final Account a = accounts.stream().filter( p -> p.number().equals(number) ).findFirst().orElse(null);
+        return new DefaultAccount(a.number(), a.ownerName(), queryForAccount(number));
     }
+
+
+    @Override
+    public synchronized List<Order> queryForAccount(AccountNumber accountNumber) {
+        return ordersLog.stream().filter(o -> o.accountNumber().equals(accountNumber)).collect(Collectors.toList());
+    }
+
+    @Override
+    public synchronized void commit(Transaction<Order> transaction) {
+        transaction.transactionLog().forEach((o) -> {
+            ordersLog.add(o);
+        });
+    }
+
+
 }

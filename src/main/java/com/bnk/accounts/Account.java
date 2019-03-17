@@ -1,5 +1,8 @@
 package com.bnk.accounts;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 /**
  * An account type
  */
@@ -9,7 +12,7 @@ public interface Account {
      * The account unique ID
      * @return integer ID
      */
-    AccountNumber id();
+    AccountNumber number();
 
     
     /**
@@ -26,6 +29,12 @@ public interface Account {
     Value balance();
     
     
-    void setBalance(Value amount);
+    public static Account newInstance(AccountNumber id, OwnerName ownerName ) {
+        return new DefaultAccount(id, ownerName, Collections.EMPTY_LIST);
+    }
+    
+    public static Account snapshot(AccountNumber id, OwnerName ownerName, Value p_balance ) {
+        return new DefaultAccount(id, ownerName, Arrays.asList( new DefaultOrder(id, p_balance)));
+    }
 
 }

@@ -1,25 +1,31 @@
 package com.bnk.accounts;
 
-import com.bnk.utils.Result;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class DefaultAccount implements Account {
     
     public static long MAX_VALUE = Long.MAX_VALUE;
     
-    private final AccountNumber id;
+    private final AccountNumber number;
     private final OwnerName ownerName;
-    private Value balance;
+    private final List< Order > balanceTransactions;
     
     
-    public DefaultAccount(AccountNumber id, OwnerName ownerName, Value initilalBalance) {
-        this.id = id;
-        this.ownerName = ownerName;
-        this.balance = initilalBalance;
+    public DefaultAccount(AccountNumber id, OwnerName ownerName) {
+        this(id, ownerName, Collections.EMPTY_LIST );  
     }
-
+    
+    public DefaultAccount(AccountNumber id, OwnerName ownerName, List< Order > balanceTransactions) {
+        this.number = id;
+        this.ownerName = ownerName;
+        this.balanceTransactions = balanceTransactions;
+    }
+    
     @Override
-    public AccountNumber id() {
-        return id;
+    public AccountNumber number() {
+        return number;
     }
 
     @Override
@@ -27,18 +33,15 @@ public class DefaultAccount implements Account {
         return ownerName;
     }
     
-        @Override
+    @Override
     public Value balance() {
-        return balance;
+        return balanceTransactions.stream().map( p -> p.amount()).reduce(new Value(0), (x,y) ->  x.add(y));
     }
     
     @Override
     public String toString() {
-        return "Account # " + id + " Name: " + ownerName.firstName + " " + ownerName.secondName;
+        return "Account # " + number + " Owner's name: " + ownerName;
     }
+    
 
-    @Override
-    public void setBalance(Value amount) {
-       balance = amount;
-    }
 }

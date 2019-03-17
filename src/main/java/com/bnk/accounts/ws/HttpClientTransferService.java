@@ -5,7 +5,6 @@ import com.bnk.accounts.AccountNumber;
 import com.bnk.accounts.TransferException;
 import com.bnk.accounts.TransferService;
 import com.bnk.accounts.Value;
-import com.bnk.utils.Result;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -40,14 +39,14 @@ public class HttpClientTransferService implements TransferService {
      * {@inheritDoc}
      */
     @Override
-    public Result<Result.Void> transfer(AccountNumber from, AccountNumber to, Value amount){
+    public Value transfer(AccountNumber from, AccountNumber to, Value amount) {
         try {
             final URL url = new URL( "http://" 
                                     + address.getHostString() + ":" + address.getPort()
                                     + basePath 
                                     + "/" + TRANSFER_RESOURCE_NAME
-                                    + "?" + FROM_ACCOUNT_PARAMETER_NAME + "=" + from.num
-                                    + "&" + TO_ACCOUNT_PARAMETER_NAME + "=" + to.num
+                                    + "?" + FROM_ACCOUNT_PARAMETER_NAME + "=" + from
+                                    + "&" + TO_ACCOUNT_PARAMETER_NAME + "=" + to
                                     + "&" + AMOUNT_PARAMETER_NAME + "=" + amount);
             final HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 
@@ -64,15 +63,34 @@ public class HttpClientTransferService implements TransferService {
                       content.append(inputLine);
                 }
                 if(con.getResponseCode() == BUSINESS_LOGIC_CONFLICT_HTTP_CODE) {
-                    return new Result.Fail(new TransferException(content.toString()));
+         
+                    throw new TransferException(content.toString());
                 }
-                return new Result.Fail(new RuntimeException("Server error: " + con.getResponseCode() + content));
+                throw new RuntimeException("Server error: " + con.getResponseCode() + content);
             }
-            return new Result.Success<>();
+            final BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            final StringBuilder content = new StringBuilder();
+            while ((inputLine = in.readLine()) != null) {
+                  content.append(inputLine);
+            }
+            return new Value(Long.parseLong(content.toString())); //TODO
             
         } catch (IOException ex) {
-             return new Result.Fail(new RuntimeException(ex));
+             throw new RuntimeException(ex);
         }
+    }
+
+
+
+    @Override
+    public Account withdraw(Account from, Value amount) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Account deposit(Account to, Value amount) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }
