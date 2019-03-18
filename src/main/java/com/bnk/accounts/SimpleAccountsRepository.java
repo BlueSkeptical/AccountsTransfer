@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 
 /**
- * An implementation of AccountsRepository with linear search for accounts
+ * In-memory 'database'
  */
 public class SimpleAccountsRepository implements AccountsRepository {
     
