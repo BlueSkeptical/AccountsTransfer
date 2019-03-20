@@ -5,6 +5,7 @@ import com.bnk.accounts.AccountNumber;
 import com.bnk.accounts.TransferException;
 import com.bnk.accounts.TransferService;
 import com.bnk.accounts.Value;
+import com.bnk.utils.fp.Try;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,7 +42,7 @@ public class HttpClientTransferService implements TransferService {
      * {@inheritDoc}
      */
     @Override
-    public Value transfer(AccountNumber from, AccountNumber to, Value amount) {
+    public Try<Value> transfer(AccountNumber from, AccountNumber to, Value amount) {
         try {
             final URL url = new URL("http://"
                     + address.getHostString() + ":" + address.getPort()
@@ -61,12 +62,12 @@ public class HttpClientTransferService implements TransferService {
                 final String responseErrorData = read(con.getErrorStream());
                 if (con.getResponseCode() == BUSINESS_LOGIC_CONFLICT_HTTP_CODE) {
 
-                    throw new TransferException(responseErrorData);
+                    return Try.failure(new TransferException(responseErrorData));
                 }
-                throw new RuntimeException("Server error: " + con.getResponseCode() + responseErrorData);
+                return Try.failure(new RuntimeException("Server error: " + con.getResponseCode() + responseErrorData));
             }
             final String responseData = read(con.getInputStream());
-            return new Value(Long.parseLong(responseData));
+            return Try.success(new Value(Long.parseLong(responseData)));
 
         } catch (IOException ex) {
             throw new RuntimeException(ex);

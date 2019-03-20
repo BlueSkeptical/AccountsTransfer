@@ -1,11 +1,13 @@
 package com.bnk.accounts;
 
+import com.bnk.utils.fp.Try;
+
 /**
  * An API for transferring value between two accounts
  */
 public interface TransferService {
     
-    Value transfer(AccountNumber from, AccountNumber to, Value amount);
+    Try<Value> transfer(AccountNumber from, AccountNumber to, Value amount);
     
     Account withdraw(Account from, Value amount);
     

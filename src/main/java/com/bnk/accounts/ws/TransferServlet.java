@@ -4,6 +4,7 @@ import com.bnk.accounts.AccountNumber;
 import com.bnk.accounts.AccountsRepository;
 import com.bnk.accounts.TransferService;
 import com.bnk.accounts.Value;
+import com.bnk.utils.fp.Try;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,18 +35,18 @@ public class TransferServlet extends HttpServlet {
     }
 
     private void transfer(AccountNumber from, AccountNumber to, Value amount, HttpServletResponse response) {
-        try {
-            final Value transfered = transferService.transfer(from, to, amount);
-            response.setStatus(HttpServletResponse.SC_OK);
-            println(response, transfered.toString());
-        } catch (Exception ex) {
-            Logger.getLogger(TransferServlet.class.getName()).log(Level.WARNING, ex.getMessage());
-            println(response, "ERR:" + ex.getMessage());
-            response.setStatus(HttpServletResponse.SC_CONFLICT);
-        }
+        transferService.transfer(from, to, amount)
+                        .tryIO(p -> { response.setStatus(HttpServletResponse.SC_OK);
+                                      write(response, p.toString());
+                                      return null; }, //TODO
+                               p -> { response.setStatus(HttpServletResponse.SC_CONFLICT);
+                                      write(response, "ERR:" + p.getMessage());
+                                      Logger.getLogger(TransferServlet.class.getName()).log(Level.WARNING, p.getMessage());
+                                      return null; } );
+   
     }
-
-    private void println(HttpServletResponse response, String str) {
+    
+    private static void write(HttpServletResponse response, String str) {
         try {
             response.getWriter().println(str);
         } catch (IOException ex) {

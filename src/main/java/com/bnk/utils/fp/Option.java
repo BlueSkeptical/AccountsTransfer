@@ -16,7 +16,7 @@ public abstract class Option<T> {
     
     public abstract <S> Option<S> flatMap(Function<T,Option<S>> fun);
     
-    public abstract void tryIO(Function<T, IO<Void>> success, Function<Exception, IO<Void>> failure);
+    public abstract void tryIO(Function<T, IO<Void>> success, Function<String, IO<Void>> empty);
     
     private static class Success<T> extends Option<T> {
         private final T value;
@@ -36,7 +36,7 @@ public abstract class Option<T> {
         }  
 
         @Override
-        public void tryIO(Function<T, IO<Void>> success, Function<Exception, IO<Void>> failure) {
+        public void tryIO(Function<T, IO<Void>> success, Function<String, IO<Void>> failure) {
             success.apply(value);
         }
     }
@@ -54,8 +54,8 @@ public abstract class Option<T> {
         }
 
         @Override
-        public void tryIO(Function<T, IO<Void>> success, Function<Exception, IO<Void>> failure) {
-            
+        public void tryIO(Function<T, IO<Void>> success, Function<String, IO<Void>> empty) {
+            empty.apply("Empty");
         }    
     }
     
