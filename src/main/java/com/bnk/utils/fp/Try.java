@@ -1,4 +1,4 @@
-package com.bnk.utils;
+package com.bnk.utils.fp;
 
 import java.util.function.Function;
 
@@ -16,7 +16,7 @@ public abstract class Try<T> {
     
     public abstract <S> Try<S> flatMap(Function<T,Try<S>> fun);
     
-    public abstract void tryIO(Function<T,Void> success, Function<Exception,Void> failure);
+    public abstract void tryIO(Function<T, IO<Void>> success, Function<Exception, IO<Void>> failure);
     
     private static class Success<T> extends Try<T> {
         private final T value;
@@ -36,7 +36,7 @@ public abstract class Try<T> {
         }  
 
         @Override
-        public void tryIO(Function<T, Void> success, Function<Exception, Void> failure) {
+        public void tryIO(Function<T, IO<Void>> success, Function<Exception, IO<Void>> failure) {
             success.apply(value);
         }
     }
@@ -60,7 +60,7 @@ public abstract class Try<T> {
         }
 
         @Override
-        public void tryIO(Function<T, Void> success, Function<Exception, Void> failure) {
+        public void tryIO(Function<T, IO<Void>> success, Function<Exception, IO<Void>> failure) {
             failure(exception);
         }
     }
