@@ -24,18 +24,20 @@ public class SimpleAccountsRepository implements AccountsRepository {
 
     @Override
     public Account account(AccountNumber number) {
-        final Account a = accounts.stream().filter( p -> p.number().equals(number) ).findFirst().orElse(null);
-        return new DefaultAccount(a.number(), a.ownerName(), queryForAccount(number));
+        return accounts.stream().filter( p -> p.number().equals(number))
+                                .findFirst()
+                                .map(p -> new DefaultAccount(p.number(), p.ownerName(), queryForAccount(number)))
+                                .orElse(null);
     }
 
 
     @Override
-    public synchronized List<Order> queryForAccount(AccountNumber accountNumber) {
+    public List<Order> queryForAccount(AccountNumber accountNumber) {
         return ordersLog.stream().filter(o -> o.accountNumber().equals(accountNumber)).collect(Collectors.toList());
     }
 
     @Override
-    public synchronized void commit(Transaction<Order> transaction) {
+    public void commit(Transaction<Order> transaction) {
         transaction.transactionLog().forEach((o) -> {
             ordersLog.add(o);
         });

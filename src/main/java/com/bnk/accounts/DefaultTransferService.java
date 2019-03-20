@@ -1,5 +1,6 @@
 package com.bnk.accounts;
 
+import com.bnk.utils.fp.Try;
 import com.bnk.utils.repository.Transaction;
 
 /**
@@ -14,19 +15,22 @@ public class DefaultTransferService implements TransferService {
     }
 
     @Override
-    public Value transfer(AccountNumber accountFrom, AccountNumber to, Value amount) {
+    public synchronized Try<Value> transfer(AccountNumber accountFrom, AccountNumber to, Value amount) {
         
+        try {
+            final Transaction<Order> withdrawTransaction = logWithdrawOrder(Transaction.newInstace(), repository.account(accountFrom), amount);
+            final Transaction<Order> resultTransaction = logDepositOrder(withdrawTransaction, repository.account(to), amount);    
+            repository.commit(resultTransaction);
+            return Try.success(amount);
+        } catch(Exception ex) {
+            return Try.failure(ex);
+        }
         
-        final Transaction<Order> transaction = logWithdrawOrder(Transaction.newInstace(), repository.account(accountFrom), amount);
-        final Transaction<Order> resultTransaction = logDepositOrder(transaction, repository.account(to), amount);
-        repository.commit(resultTransaction);
-
-        return amount;
 
     }
 
     @Override
-    public Account withdraw(Account from, Value amount) {
+    public synchronized Account withdraw(Account from, Value amount) {
         try {
             final Transaction<Order> transaction = logWithdrawOrder(Transaction.newInstace(), from, amount);
             repository.commit(transaction);
@@ -37,7 +41,7 @@ public class DefaultTransferService implements TransferService {
     }
 
     @Override
-    public Account deposit(Account to, Value amount) {
+    public synchronized Account deposit(Account to, Value amount) {
         try {
             final Transaction<Order> transaction = logDepositOrder(Transaction.newInstace(), to, amount);
             repository.commit(transaction);
