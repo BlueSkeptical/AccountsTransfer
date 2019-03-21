@@ -36,7 +36,7 @@ public class TransferServlet extends HttpServlet {
 
     private void transfer(AccountNumber from, AccountNumber to, Value amount, HttpServletResponse response) {
         transferService.transfer(from, to, amount)
-                        .tryIO(p -> { response.setStatus(HttpServletResponse.SC_OK);
+                        .io(p -> { response.setStatus(HttpServletResponse.SC_OK);
                                       write(response, p.toString());
                                       return null; }, //TODO
                                p -> { response.setStatus(HttpServletResponse.SC_CONFLICT);

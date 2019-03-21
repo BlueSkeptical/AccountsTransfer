@@ -7,11 +7,11 @@ import java.util.List;
 
 public interface Transaction<T> {
     
-    Transaction<T> log( T command);
+    Transaction<T> add( T command);
     
     List<T> transactionLog();
     
-    static Transaction newInstace() {
+    static Transaction empty() {
         return new SimpleTransaction<>( Collections.EMPTY_LIST );
     }
 }

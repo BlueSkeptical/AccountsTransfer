@@ -18,8 +18,8 @@ public class DefaultTransferService implements TransferService {
     public synchronized Try<Value> transfer(AccountNumber accountFrom, AccountNumber to, Value amount) {
         
         try {
-            final Transaction<Order> withdrawTransaction = logWithdrawOrder(Transaction.newInstace(), repository.account(accountFrom), amount);
-            final Transaction<Order> resultTransaction = logDepositOrder(withdrawTransaction, repository.account(to), amount);    
+            final Transaction<Order> withdrawTransaction = withdrawOrder(repository.account(accountFrom), amount);
+            final Transaction<Order> resultTransaction = withDepositOrder(withdrawTransaction, repository.account(to), amount);    
             repository.commit(resultTransaction);
             return Try.success(amount);
         } catch(Exception ex) {
@@ -32,7 +32,7 @@ public class DefaultTransferService implements TransferService {
     @Override
     public synchronized Account withdraw(Account from, Value amount) {
         try {
-            final Transaction<Order> transaction = logWithdrawOrder(Transaction.newInstace(), from, amount);
+            final Transaction<Order> transaction = withdrawOrder(from, amount);
             repository.commit(transaction);
         } catch (Exception ex) {
             ////
@@ -43,7 +43,7 @@ public class DefaultTransferService implements TransferService {
     @Override
     public synchronized Account deposit(Account to, Value amount) {
         try {
-            final Transaction<Order> transaction = logDepositOrder(Transaction.newInstace(), to, amount);
+            final Transaction<Order> transaction = withDepositOrder(Transaction.empty(), to, amount);
             repository.commit(transaction);
         } catch (Exception ex) {
             ////
@@ -51,15 +51,15 @@ public class DefaultTransferService implements TransferService {
         return repository.account(to.number());
     }
 
-    private Transaction<Order> logDepositOrder(Transaction<Order> transaction, Account to, Value amount) {
+    private Transaction<Order> withDepositOrder(Transaction<Order> transaction, Account to, Value amount) {
             final Order depositOrder = new DefaultOrder(to.number(), amount);
-            return transaction.log(depositOrder);
+            return transaction.add(depositOrder);
     }
     
-    private Transaction<Order> logWithdrawOrder(Transaction<Order> transaction, Account from, Value amount) {
+    private Transaction<Order> withdrawOrder(Account from, Value amount) {
         if (from.balance().compareTo(amount) >= 0) {
             final Order order = new DefaultOrder(from.number(), amount.negate());
-            return transaction.log(order);
+            return Transaction.empty().add(order);
         } else {
             throw new IllegalStateException();
         }

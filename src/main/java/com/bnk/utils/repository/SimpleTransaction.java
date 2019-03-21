@@ -32,7 +32,7 @@ public class SimpleTransaction<T> implements Transaction<T> {
     }
 
     @Override
-    public Transaction<T> log(T command) {
+    public Transaction<T> add(T command) {
         final List<T> l = new ArrayList<>(log);
         l.add(command);
         return new SimpleTransaction<>(l);

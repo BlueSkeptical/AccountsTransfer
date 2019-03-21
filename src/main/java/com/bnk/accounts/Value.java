@@ -10,6 +10,10 @@ public class Value implements Comparable<Value> {
         this.value = value;
     }
    
+    public static Value of(long value) {
+        return new Value(value);
+    }
+    
     public Value add(Value that) {
         return new Value(that.value + value);
     }

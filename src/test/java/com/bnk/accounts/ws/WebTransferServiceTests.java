@@ -1,6 +1,7 @@
 package com.bnk.accounts.ws;
 
 import com.bnk.accounts.*;
+import com.bnk.utils.fp.Try;
 import java.net.InetSocketAddress;
 import java.util.Arrays;
 import static org.junit.Assert.*;
@@ -38,8 +39,11 @@ public class WebTransferServiceTests {
     @Test
     public void should_correctly_perform_transfers_routine()
     {
-        final Value transfered = transferService.transfer(account0.number(), account1.number(), new Value(10));
-        assertEquals(new Value(10), transfered);
+        final Try<Value> transfered = transferService.transfer(account0.number(), account1.number(), new Value(10));
+        transfered.io(v -> { assertEquals(new Value(10), v); 
+                                return null; },
+                         ex -> { fail(ex.getMessage());
+                                 return null;});
         assertEquals(new Value(90), accountsRepository.account(account0.number()).balance());
         assertEquals(new Value(210), accountsRepository.account(account1.number()).balance());
         assertEquals(new Value(0), accountsRepository.account(account2.number()).balance());
