@@ -1,6 +1,7 @@
 package com.bnk.accounts.ws;
 
 import com.bnk.accounts.*;
+import com.bnk.utils.fp.IO;
 import com.bnk.utils.fp.Try;
 import java.net.InetSocketAddress;
 import java.util.Arrays;
@@ -12,58 +13,50 @@ public class WebTransferServiceTests {
 
     static final int SERVER_PORT = 8080;
     static TransferServiceServer serviceServer;
-    static Account account0;
-    static Account account1;
-    static Account account2;
-    static AccountsRepository accountsRepository;
+    static Account acc0;
+    static Account acc1;
+    static AccountsRepository ar;
     static TransferServiceServer webTransferServiceServer;
-    static TransferService transferService;
+    static TransferService ts;
     
     @BeforeClass
     public static void setupEnvironment() throws Exception {   
-        transferService = new HttpClientTransferService(new InetSocketAddress("localhost", SERVER_PORT), "" );
+        ts = new HttpClientTransferService(new InetSocketAddress("localhost", SERVER_PORT), "" );
         
-        account0 = Account.newInstance(new AccountNumber(0),new OwnerName("Joe", "Doe"));
-        account1 = Account.newInstance(new AccountNumber(1), new OwnerName("Mary", "Smith"));
-        account2 = Account.newInstance(new AccountNumber(2), new OwnerName("Jan", "Kowalski"));
+        acc0 = Account.newInstance(new AccountNumber(0),new OwnerName("Joe", "Doe"));
+        acc1 = Account.newInstance(new AccountNumber(1), new OwnerName("Mary", "Smith"));
         
-        final Order someInitialMoneyOrder0 = new DefaultOrder(account0.number(), new Value(100));
-        final Order someInitialMoneyOrder1 = new DefaultOrder(account1.number(), new Value(200));
-        accountsRepository = new SimpleAccountsRepository(Arrays.asList(someInitialMoneyOrder0, someInitialMoneyOrder1), account0, account1,account2);
+        final Order someInitialMoneyOrder0 = new DefaultOrder(acc0.number(), new Value(100));
+        final Order someInitialMoneyOrder1 = new DefaultOrder(acc1.number(), new Value(200));
+        ar = new SimpleAccountsRepository(Arrays.asList(someInitialMoneyOrder0, someInitialMoneyOrder1), acc0, acc1);
         
         
-        serviceServer = new TransferServiceServer(SERVER_PORT, "", accountsRepository, new DefaultTransferService(accountsRepository));
+        serviceServer = new TransferServiceServer(SERVER_PORT, "", ar, new DefaultTransferService(ar));
         serviceServer.start(); 
     }
     
     @Test
     public void should_correctly_perform_transfers_routine()
     {
-        final Try<Value> transfered = transferService.transfer(account0.number(), account1.number(), new Value(10));
-        transfered.io(v -> { assertEquals(new Value(10), v); 
-                                return null; },
-                         ex -> { fail(ex.getMessage());
-                                 return null;});
-        assertEquals(new Value(90), accountsRepository.account(account0.number()).balance());
-        assertEquals(new Value(210), accountsRepository.account(account1.number()).balance());
-        assertEquals(new Value(0), accountsRepository.account(account2.number()).balance());
+        final Try<Value> result = ts.transfer(acc0.number(), acc1.number(), new Value(10));
+        result.io(v -> IO.effect( () -> assertEquals(new Value(10), v)),
+                      ex -> IO.effect( () -> fail(ex.getMessage()))).run();
+        assertEquals(new Value(90), ar.account(acc0.number()).balance());
+        assertEquals(new Value(210), ar.account(acc1.number()).balance());
+    }
+    
+    
+    @Test
+    public void should_keep_old_balance_after_exception_when_amount_on_source_account_is_not_enough() {
+
+        final Value oldValue0 = ar.account(acc0.number()).balance();
+        final Value oldValue1 = ar.account(acc1.number()).balance();
         
-        /*
-        transferService.transfer(account1, account2.number(), new Value(10));
-        synchronized(accountsRepository) {
-            assertEquals(new Value(90), account0.balance());
-            assertEquals(new Value(200), account1.balance());
-            assertEquals(new Value(310), account2.balance());
-        }
+        final Try<Value> result = ts.transfer(acc0.number(), acc1.number(), new Value(110));
         
-        //an attempt to transfer more than left on the account
-      //  assertEquals(new Result.Fail<>(new TransferException()),
-      //               transferService.transfer(account0, account2.number(), new Value(100)));
-   
-        synchronized(accountsRepository) {
-            assertEquals(new Value(90), account0.balance());
-            assertEquals(new Value(200), account1.balance());
-            assertEquals(new Value(310), account2.balance());
-        } */
+        result.io(v -> IO.effect(() -> fail("Unexpected value")),
+                  ex ->  IO.effect(() ->{ assertEquals(oldValue0, ar.account(acc0.number()).balance());
+                                         assertEquals(oldValue1, ar.account(acc1.number()).balance()); })).run();
+
     }
 }
