@@ -1,5 +1,6 @@
 package com.bnk.accounts;
 
+import com.bnk.utils.fp.IO;
 import com.bnk.utils.fp.Try;
 import com.bnk.utils.repository.Transaction;
 
@@ -15,15 +16,14 @@ public class DefaultTransferService implements TransferService {
     }
 
     @Override
-    public synchronized Try<Value> transfer(AccountNumber accountFrom, AccountNumber to, Value amount) {
-        
+    public synchronized IO<Try<Value>> transfer(AccountNumber accountFrom, AccountNumber to, Value amount) {
         try {
             final Transaction<Order> withdrawTransaction = withdrawOrder(repository.account(accountFrom), amount);
             final Transaction<Order> resultTransaction = withDepositOrder(withdrawTransaction, repository.account(to), amount);    
             repository.commit(resultTransaction);
-            return Try.success(amount);
+            return () -> Try.success(amount);
         } catch(Exception ex) {
-            return Try.failure(ex);
+            return () -> Try.failure(ex);
         }
         
 

@@ -1,5 +1,6 @@
 package com.bnk.accounts;
 
+import com.bnk.utils.fp.IO;
 import com.bnk.utils.fp.Try;
 
 /**
@@ -7,7 +8,7 @@ import com.bnk.utils.fp.Try;
  */
 public interface TransferService {
     
-    Try<Value> transfer(AccountNumber from, AccountNumber to, Value amount);
+    IO<Try<Value>> transfer(AccountNumber from, AccountNumber to, Value amount);
     
     Account withdraw(Account from, Value amount);
     

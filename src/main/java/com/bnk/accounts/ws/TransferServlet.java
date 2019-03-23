@@ -4,6 +4,7 @@ import com.bnk.accounts.AccountNumber;
 import com.bnk.accounts.AccountsRepository;
 import com.bnk.accounts.TransferService;
 import com.bnk.accounts.Value;
+import com.bnk.utils.fp.IO;
 import com.bnk.utils.fp.Try;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -35,14 +36,12 @@ public class TransferServlet extends HttpServlet {
     }
 
     private void transfer(AccountNumber from, AccountNumber to, Value amount, HttpServletResponse response) {
-        transferService.transfer(from, to, amount)
-                        .io(p -> { response.setStatus(HttpServletResponse.SC_OK);
-                                      write(response, p.toString());
-                                      return null; }, //TODO
-                               p -> { response.setStatus(HttpServletResponse.SC_CONFLICT);
-                                      write(response, "ERR:" + p.getMessage());
-                                      Logger.getLogger(TransferServlet.class.getName()).log(Level.WARNING, p.getMessage());
-                                      return null; } );
+        final Try<Value> result = transferService.transfer(from, to, amount).run();
+        result.io(p -> IO.effect(() -> { response.setStatus(HttpServletResponse.SC_OK);
+                                         write(response, p.toString()); }),
+                  ex -> IO.effect(() -> { response.setStatus(HttpServletResponse.SC_CONFLICT);
+                                        write(response, "ERR:" + ex.getMessage()); 
+                                        Logger.getLogger(TransferServlet.class.getName()).log(Level.WARNING, ex.getMessage()); } )).run();
    
     }
     

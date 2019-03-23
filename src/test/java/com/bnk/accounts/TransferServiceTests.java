@@ -22,7 +22,7 @@ public class TransferServiceTests {
     public void should_return_correct_when_successfully_transfered_form_one_account_to_another() {
         final Context ctx = createContext();
      
-        final Try<Value> value = ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), Value.of(10));
+        final Try<Value> value = ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), Value.of(10)).run();
         
         value.io(v -> IO.effect(() ->  assertEquals(Value.of(10), v)),
                  ex -> IO.effect(() -> fail(ex.getMessage()))).run();     
@@ -42,7 +42,7 @@ public class TransferServiceTests {
     public void should_keep_old_balance_after_exception_when_amount_on_source_account_is_not_enough() {
         final Context ctx = createContext();
 
-        final Try<Value> result = ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), new Value(110));
+        final Try<Value> result = ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), new Value(110)).run();
         
         result.io(v -> IO.effect(() -> fail("Unexpected value")),
                   ex ->  IO.effect(() ->{ assertEquals(new Value(100), ctx.ar.account(ctx.acc0.number()).balance());
