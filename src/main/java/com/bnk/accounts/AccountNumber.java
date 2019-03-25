@@ -1,6 +1,5 @@
 package com.bnk.accounts;
 
-
 public class AccountNumber {
 
     public AccountNumber(long num) {

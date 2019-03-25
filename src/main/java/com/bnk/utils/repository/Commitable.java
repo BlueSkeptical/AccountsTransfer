@@ -1,11 +1,10 @@
 
-package com.bnk.accounts;
+package com.bnk.utils.repository;
 
 import com.bnk.utils.fp.Try;
-import com.bnk.utils.repository.Transaction;
 
 
-interface Commitable<T> {
+public interface Commitable<T> {
     
     Try<Integer> commit(Transaction<T> transaction);
     
