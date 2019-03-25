@@ -8,9 +8,6 @@ import com.bnk.utils.fp.Try;
  */
 public interface TransferService {
     
-    IO<Try<Value>> transfer(AccountNumber from, AccountNumber to, Value amount);
+    IO<Try<Integer>> transfer(AccountNumber from, AccountNumber to, Value amount);
     
-    Account withdraw(Account from, Value amount);
-    
-    Account deposit(Account to, Value amount);
 }

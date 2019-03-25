@@ -1,5 +1,7 @@
 package com.bnk.accounts;
 
+import com.bnk.utils.fp.Try;
+
 
 /**
  * A service for retrieving accounts
@@ -11,6 +13,6 @@ public interface AccountsRepository extends OrdersLog, Commitable<Order>
      * @param id ID
      * @return an instance of Account
      */
-    Account account(AccountNumber id);
+    Try<? extends Account> account(AccountNumber id);
 
 }

@@ -4,6 +4,7 @@ import com.bnk.utils.fp.IO;
 import com.bnk.utils.fp.Try;
 import java.util.Arrays;
 import static org.junit.Assert.*;
+import static com.bnk.accounts.TestBalance.*;
 import org.junit.Test;
 
 public class TransferServiceTests {
@@ -22,9 +23,9 @@ public class TransferServiceTests {
     public void should_return_correct_when_successfully_transfered_form_one_account_to_another() {
         final Context ctx = createContext();
      
-        final Try<Value> value = ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), Value.of(10)).run();
+        final Try<Integer> value = ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), Value.of(10)).run();
         
-        value.io(v -> IO.effect(() ->  assertEquals(Value.of(10), v)),
+        value.io(v -> IO.effect(() ->  assertTrue(v == 1)),
                  ex -> IO.effect(() -> fail(ex.getMessage()))).run();     
     }
     
@@ -32,21 +33,23 @@ public class TransferServiceTests {
     public void should_correctly_transfer_some_amount_from_one_account_to_another() {
         final Context ctx = createContext();
      
-        ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), Value.of(10));
+        ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), Value.of(10)).run();
         
-        assertEquals(new Value(90), ctx.ar.account(ctx.acc0.number()).balance());
-        assertEquals(new Value(210), ctx.ar.account(ctx.acc1.number()).balance());
+        verifyBalance(ctx.ar, ctx.acc0, Value.of(90));
+        verifyBalance(ctx.ar, ctx.acc1, Value.of(210));
+        ctx.ar.account(ctx.acc0.number()).io(a -> IO.effect(()-> assertEquals(new Value(90), a.balance())),ex -> IO.effect(() -> fail(ex.getMessage()))).run();
+        ctx.ar.account(ctx.acc1.number()).io(a -> IO.effect(()-> assertEquals(new Value(210), a.balance())),ex -> IO.effect(() -> fail(ex.getMessage()))).run();
     }
 
     @Test
     public void should_keep_old_balance_after_exception_when_amount_on_source_account_is_not_enough() {
         final Context ctx = createContext();
 
-        final Try<Value> result = ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), new Value(110)).run();
+        final Try<Integer> result = ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), new Value(110)).run();
         
         result.io(v -> IO.effect(() -> fail("Unexpected value")),
-                  ex ->  IO.effect(() ->{ assertEquals(new Value(100), ctx.ar.account(ctx.acc0.number()).balance());
-                                          assertEquals(new Value(200), ctx.ar.account(ctx.acc1.number()).balance()); })).run();
+                  ex ->  IO.effect(() ->{ verifyBalance(ctx.ar, ctx.acc0, Value.of(100));
+                                          verifyBalance(ctx.ar, ctx.acc1, Value.of(200)); })).run();
     }
     
     private static class Context {

@@ -6,6 +6,7 @@ import com.bnk.utils.fp.Try;
 import java.net.InetSocketAddress;
 import java.util.Arrays;
 import static org.junit.Assert.*;
+import static com.bnk.accounts.TestBalance.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -38,25 +39,25 @@ public class WebTransferServiceTests {
     @Test
     public void should_correctly_perform_transfers_routine()
     {
-        final Try<Value> result = ts.transfer(acc0.number(), acc1.number(), new Value(10)).run();
-        result.io(v -> IO.effect( () -> assertEquals(new Value(10), v)),
+        final Try<Integer> result = ts.transfer(acc0.number(), acc1.number(), new Value(10)).run();
+        result.io(v -> IO.effect( () -> assertTrue(1 == v)),
                       ex -> IO.effect( () -> fail(ex.getMessage()))).run();
-        assertEquals(new Value(90), ar.account(acc0.number()).balance());
-        assertEquals(new Value(210), ar.account(acc1.number()).balance());
+        verifyBalance(ar, acc0, Value.of(90));
+        verifyBalance(ar, acc1, Value.of(210));
     }
     
     
     //@Test
     public void should_keep_old_balance_after_exception_when_amount_on_source_account_is_not_enough() {
-
+/*
         final Value oldValue0 = ar.account(acc0.number()).balance();
         final Value oldValue1 = ar.account(acc1.number()).balance();
         
-        final Try<Value> result = ts.transfer(acc0.number(), acc1.number(), new Value(110)).run();
+        final Try<Integer> result = ts.transfer(acc0.number(), acc1.number(), new Value(110)).run();
         
         result.io(v -> IO.effect(() -> fail("Unexpected value")),
                   ex ->  IO.effect(() ->{ assertEquals(oldValue0, ar.account(acc0.number()).balance());
                                          assertEquals(oldValue1, ar.account(acc1.number()).balance()); })).run();
-
+*/
     }
 }

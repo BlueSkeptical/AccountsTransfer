@@ -43,7 +43,7 @@ public class HttpClientTransferService implements TransferService {
      * {@inheritDoc}
      */
     @Override
-    public IO<Try<Value>> transfer(AccountNumber from, AccountNumber to, Value amount) {
+    public IO<Try<Integer>> transfer(AccountNumber from, AccountNumber to, Value amount) {
         try {
             final URL url = new URL("http://"
                     + address.getHostString() + ":" + address.getPort()
@@ -69,7 +69,7 @@ public class HttpClientTransferService implements TransferService {
                 return () -> Try.failure(new RuntimeException("Server error: " + responseCode + " " + responseErrorData));
             }
             final String responseData = read(con.getInputStream());
-            return () -> Try.success(new Value(Long.parseLong(responseData)));
+            return () -> Try.of(() -> Integer.parseInt(responseData));
 
         } catch (IOException ex) {
             return () -> Try.failure(ex);
@@ -84,16 +84,6 @@ public class HttpClientTransferService implements TransferService {
             content.append(inputLine);
         }
         return content.toString();
-    }
-
-    @Override
-    public Account withdraw(Account from, Value amount) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Account deposit(Account to, Value amount) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

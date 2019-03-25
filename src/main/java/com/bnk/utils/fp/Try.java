@@ -1,6 +1,7 @@
 package com.bnk.utils.fp;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public abstract class Try<T> {
     
@@ -12,6 +13,15 @@ public abstract class Try<T> {
        return new Failure<>(exception); 
     }
    
+    public static <T> Try<T> of(Supplier<T> sup) {
+        try {
+            return success(sup.get());
+        } catch (Exception ex) {
+            return failure(ex);
+        }
+    }
+    
+    
     public abstract <S> Try<S> map(Function<T,S> fun);
     
     public abstract <S> Try<S> flatMap(Function<T,Try<S>> fun);

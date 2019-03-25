@@ -4,9 +4,6 @@ import com.bnk.utils.fp.IO;
 import com.bnk.utils.fp.Try;
 import com.bnk.utils.repository.Transaction;
 
-/**
- * An
- */
 public class DefaultTransferService implements TransferService {
 
     private final AccountsRepository repository;
@@ -16,53 +13,22 @@ public class DefaultTransferService implements TransferService {
     }
 
     @Override
-    public synchronized IO<Try<Value>> transfer(AccountNumber accountFrom, AccountNumber to, Value amount) {
-        try {
-            final Transaction<Order> withdrawTransaction = withdrawOrder(repository.account(accountFrom), amount);
-            final Transaction<Order> resultTransaction = withDepositOrder(withdrawTransaction, repository.account(to), amount);    
-            repository.commit(resultTransaction);
-            return () -> Try.success(amount);
-        } catch(Exception ex) {
-            return () -> Try.failure(ex);
-        }
+    public synchronized IO<Try<Integer>> transfer(AccountNumber from, AccountNumber to, Value amount) {
         
-
+        final IO<Try<? extends Account>> accountFrom = () -> repository.account(from);
+        
+        return accountFrom.flatMap(p -> () -> withdrawOrder(p, amount))
+                          .flatMap(p -> () -> depositOrder(p, repository.account(to), amount))
+                          .flatMap(p -> () -> p.flatMap(s -> repository.commit(s)));
     }
 
-    @Override
-    public synchronized Account withdraw(Account from, Value amount) {
-        try {
-            final Transaction<Order> transaction = withdrawOrder(from, amount);
-            repository.commit(transaction);
-        } catch (Exception ex) {
-            ////
-        }
-        return repository.account(from.number());
-    }
-
-    @Override
-    public synchronized Account deposit(Account to, Value amount) {
-        try {
-            final Transaction<Order> transaction = withDepositOrder(Transaction.empty(), to, amount);
-            repository.commit(transaction);
-        } catch (Exception ex) {
-            ////
-        }
-        return repository.account(to.number());
-    }
-
-    private Transaction<Order> withDepositOrder(Transaction<Order> transaction, Account to, Value amount) {
-            final Order depositOrder = new DefaultOrder(to.number(), amount);
-            return transaction.add(depositOrder);
+    private Try<Transaction<Order>> depositOrder(Try<Transaction<Order>> transaction, Try<? extends Account> to, Value amount) {
+        return to.flatMap(p -> transaction.flatMap(t -> Try.success(t.add(new DefaultOrder(p.number(), amount)))));
     }
     
-    private Transaction<Order> withdrawOrder(Account from, Value amount) {
-        if (from.balance().compareTo(amount) >= 0) {
-            final Order order = new DefaultOrder(from.number(), amount.negate());
-            return Transaction.empty().add(order);
-        } else {
-            throw new IllegalStateException();
-        }
+    private Try<Transaction<Order>> withdrawOrder(Try<? extends Account> from, Value amount) {
+        return from.flatMap(p -> p.balance().compareTo(amount) >= 0 ?
+                Try.success(Transaction.empty().add(new DefaultOrder(p.number(), amount.negate()))) : Try.failure(new IllegalStateException()));
     }
 
 }
