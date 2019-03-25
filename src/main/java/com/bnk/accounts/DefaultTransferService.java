@@ -28,7 +28,8 @@ public class DefaultTransferService implements TransferService {
     
     private Try<Transaction<Order>> withdrawOrder(Try<? extends Account> from, Value amount) {
         return from.flatMap(p -> p.balance().compareTo(amount) >= 0 ?
-                Try.success(Transaction.empty().add(new DefaultOrder(p.number(), amount.negate()))) : Try.failure(new IllegalStateException()));
+               Try.success(Transaction.empty().add(new DefaultOrder(p.number(), amount.negate()))) 
+               : Try.failure(new TransferException("Not enough money")));
     }
 
 }
