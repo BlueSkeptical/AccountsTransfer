@@ -40,7 +40,7 @@ public class WebTransferServiceTests {
     public void should_correctly_perform_transfers_routine()
     {
         final Try<Integer> result = ts.transfer(acc0.number(), acc1.number(), new Value(10)).run();
-        result.io(v -> IO.effect( () -> assertTrue(1 == v)),
+        result.io(v -> IO.effect( () -> assertTrue(v >= 1)),
                       ex -> IO.effect( () -> fail(ex.getMessage()))).run();
         verifyBalance(ar, acc0, Value.of(90));
         verifyBalance(ar, acc1, Value.of(210));

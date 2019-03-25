@@ -25,7 +25,7 @@ public class TransferServiceTests {
      
         final Try<Integer> value = ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), Value.of(10)).run();
         
-        value.io(v -> IO.effect(() ->  assertTrue(v == 1)),
+        value.io(v -> IO.effect(() ->  assertTrue(v >= 1)),
                  ex -> IO.effect(() -> fail(ex.getMessage()))).run();     
     }
     
