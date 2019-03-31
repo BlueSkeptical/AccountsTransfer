@@ -1,6 +1,6 @@
 package com.bnk.accounts;
 
-import com.bnk.utils.fp.Try;
+import com.bnk.utils.fp.IO;
 import com.bnk.utils.repository.Transaction;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,11 +25,11 @@ public class SimpleAccountsRepository implements AccountsRepository {
     }
 
     @Override
-    public Try<? extends Account> account(AccountNumber number) {
-        return accounts.stream().filter( p -> p.number().equals(number))
+    public IO<? extends Account> account(AccountNumber number) {
+        return IO.of(()-> accounts.stream().filter( p -> p.number().equals(number))
                                 .findFirst()
-                                .map(p -> Try.success(new DefaultAccount(p.number(), p.ownerName(), queryForAccount(number))))
-                                .orElse(Try.failure(new IllegalStateException()));
+                                .map(p -> new DefaultAccount(p.number(), p.ownerName(), queryForAccount(number)))
+                                .orElseThrow(() -> new TransferException("Not found")));
     }
 
 
@@ -39,12 +39,12 @@ public class SimpleAccountsRepository implements AccountsRepository {
     }
 
     @Override
-    public Try<Integer> commit(Transaction<Order> transaction) {
-        transaction.transactionLog().forEach((o) -> {
-            ordersLog.add(o);
-        });
-        return Try.success(counter++);
+    public IO<Integer> commit(Transaction<Order> transaction) {
+        return IO.of(() -> { 
+                transaction.transactionLog().forEach((o) -> {
+                ordersLog.add(o);
+            });
+            return counter++;
+        }); 
     }
-
-
 }

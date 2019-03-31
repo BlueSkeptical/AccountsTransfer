@@ -13,9 +13,9 @@ public abstract class Try<T> {
        return new Failure<>(exception); 
     }
    
-    public static <T> Try<T> of(Supplier<T> sup) {
+    public static <T> Try<T> of(IO.Task<T> sup) {
         try {
-            return success(sup.get());
+            return success(sup.run());
         } catch (Exception ex) {
             return failure(ex);
         }

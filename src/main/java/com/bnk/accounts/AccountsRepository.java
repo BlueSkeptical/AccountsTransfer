@@ -1,7 +1,7 @@
 package com.bnk.accounts;
 
 import com.bnk.utils.repository.Commitable;
-import com.bnk.utils.fp.Try;
+import com.bnk.utils.fp.IO;
 
 
 /**
@@ -14,6 +14,6 @@ public interface AccountsRepository extends OrdersLog, Commitable<Order>
      * @param id ID
      * @return an instance of Account
      */
-    Try<? extends Account> account(AccountNumber id);
+    IO<? extends Account> account(AccountNumber id);
 
 }

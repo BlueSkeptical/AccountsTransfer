@@ -1,10 +1,11 @@
 package com.bnk.accounts;
 
 import com.bnk.utils.fp.IO;
-import com.bnk.utils.fp.Try;
 import java.util.Arrays;
 import static org.junit.Assert.*;
-import static com.bnk.accounts.TestBalance.*;
+import com.bnk.utils.fp.Nothing;
+import java.util.function.Consumer;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class TransferServiceTests {
@@ -20,36 +21,42 @@ public class TransferServiceTests {
     }
     
     @Test
-    public void should_return_correct_when_successfully_transfered_form_one_account_to_another() {
+    public void should_return_correct_tid_when_successfully_transfered_form_one_account_to_another() {
         final Context ctx = createContext();
      
-        final Try<Integer> value = ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), Value.of(10)).run();
+        final IO<Integer> value = ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), Value.of(10));
         
-        value.io(v -> IO.effect(() ->  assertTrue(v >= 1)),
-                 ex -> IO.effect(() -> fail(ex.getMessage()))).run();     
+        require(value, p -> assertTrue(p >= 1));    
+    }
+    
+    public static <T> void require(IO<T> result, Consumer<T> assertion) {
+        result.onCallback(r -> r.io(v -> IO.effect(() -> assertion.accept(v)),
+                                    ex -> failIO()));
+    }
+    
+    private static IO<Nothing> failIO() {
+        return IO.effect(() -> Assert.fail());
     }
     
     @Test
     public void should_correctly_transfer_some_amount_from_one_account_to_another() {
         final Context ctx = createContext();
      
-        ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), Value.of(10)).run();
+        ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), Value.of(10));
         
-        verifyBalance(ctx.ar, ctx.acc0, Value.of(90));
-        verifyBalance(ctx.ar, ctx.acc1, Value.of(210));
-        ctx.ar.account(ctx.acc0.number()).io(a -> IO.effect(()-> assertEquals(new Value(90), a.balance())),ex -> IO.effect(() -> fail(ex.getMessage()))).run();
-        ctx.ar.account(ctx.acc1.number()).io(a -> IO.effect(()-> assertEquals(new Value(210), a.balance())),ex -> IO.effect(() -> fail(ex.getMessage()))).run();
+        
+        require(ctx.ar.account(ctx.acc0.number()), v -> assertEquals(new Value(190), v.balance()));
+        require(ctx.ar.account(ctx.acc1.number()), v -> assertEquals(new Value(210), v.balance()));
     }
 
     @Test
     public void should_keep_old_balance_after_exception_when_amount_on_source_account_is_not_enough() {
         final Context ctx = createContext();
 
-        final Try<Integer> result = ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), new Value(110)).run();
+        ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), new Value(110));
         
-        result.io(v -> IO.effect(() -> fail("Unexpected value")),
-                  ex ->  IO.effect(() ->{ verifyBalance(ctx.ar, ctx.acc0, Value.of(100));
-                                          verifyBalance(ctx.ar, ctx.acc1, Value.of(200)); })).run();
+        require(ctx.ar.account(ctx.acc0.number()), v -> assertEquals(new Value(100), v.balance()));
+        require(ctx.ar.account(ctx.acc1.number()), v -> assertEquals(new Value(200), v.balance()));
     }
     
     private static class Context {

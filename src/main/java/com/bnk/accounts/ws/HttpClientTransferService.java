@@ -39,11 +39,13 @@ public class HttpClientTransferService implements TransferService {
         this.basePath = basePath;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public IO<Try<Integer>> transfer(AccountNumber from, AccountNumber to, Value amount) {
+    public IO<Integer> transfer(AccountNumber from, AccountNumber to, Value amount) {
+       return  IO.of(()-> transfer_(from, to, amount));
+    }
+    
+    
+    public Integer transfer_(AccountNumber from, AccountNumber to, Value amount) {
         try {
             final URL url = new URL("http://"
                     + address.getHostString() + ":" + address.getPort()
@@ -64,15 +66,15 @@ public class HttpClientTransferService implements TransferService {
                 final int responseCode = con.getResponseCode();
                 if (responseCode == BUSINESS_LOGIC_CONFLICT_HTTP_CODE) {
 
-                    return () -> Try.failure(new TransferException(responseErrorData));
+                    throw new TransferException(responseErrorData);
                 }
-                return () -> Try.failure(new RuntimeException("Server error: " + responseCode + " " + responseErrorData));
+                throw new RuntimeException("Server error: " + responseCode + " " + responseErrorData);
             }
             final String responseData = read(con.getInputStream());
-            return () -> Try.of(() -> Integer.parseInt(responseData));
+            return Integer.parseInt(responseData);
 
         } catch (IOException ex) {
-            return () -> Try.failure(ex);
+            throw new RuntimeException(ex);
         }
     }
 

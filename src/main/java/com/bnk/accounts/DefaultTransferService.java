@@ -13,23 +13,24 @@ public class DefaultTransferService implements TransferService {
     }
 
     @Override
-    public synchronized IO<Try<Integer>> transfer(AccountNumber from, AccountNumber to, Value amount) {
-        
-        final IO<Try<? extends Account>> accountFrom = () -> repository.account(from);
-        
-        return accountFrom.flatMap(p -> () -> withdrawOrder(p, amount))
-                          .flatMap(p -> () -> depositOrder(p, repository.account(to), amount))
-                          .flatMap(p -> () -> p.flatMap(s -> repository.commit(s)));
+    public synchronized IO<Integer> transfer(AccountNumber from, AccountNumber to, Value amount) {
+        final IO<? extends Account> accountFrom = repository.account(from);
+        final IO<? extends Account> accountTo = repository.account(to);
+        return accountFrom.flatMap(a -> accountTo.flatMap(b -> transfer(a, b, amount)));
     }
 
-    private Try<Transaction<Order>> depositOrder(Try<Transaction<Order>> transaction, Try<? extends Account> to, Value amount) {
-        return to.flatMap(p -> transaction.flatMap(t -> Try.success(t.add(new DefaultOrder(p.number(), amount)))));
+    private IO<Integer> transfer(Account accountFrom, Account accountTo, Value amount) {
+        if (canWithdraw(accountFrom, amount)) {
+           return repository.commit(Transaction.empty()
+                                     .add(new DefaultOrder(accountFrom.number(), amount.negate()))
+                                     .add(new DefaultOrder(accountTo.number(), amount)));
+        } else {
+            return IO.of(() -> {throw new TransferException("Not enough money on the account"); });
+        }
     }
     
-    private Try<Transaction<Order>> withdrawOrder(Try<? extends Account> from, Value amount) {
-        return from.flatMap(p -> p.balance().compareTo(amount) >= 0 ?
-               Try.success(Transaction.empty().add(new DefaultOrder(p.number(), amount.negate()))) 
-               : Try.failure(new TransferException("Not enough money")));
+    private boolean canWithdraw(Account accountFrom, Value amount) {
+        return accountFrom.balance().compareTo(amount) >= 0;
     }
 
 }

@@ -1,11 +1,11 @@
 
 package com.bnk.utils.repository;
 
-import com.bnk.utils.fp.Try;
+import com.bnk.utils.fp.IO;
 
 
 public interface Commitable<T> {
     
-    Try<Integer> commit(Transaction<T> transaction);
+    IO<Integer> commit(Transaction<T> transaction);
     
 }

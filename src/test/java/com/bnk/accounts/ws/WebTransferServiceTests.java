@@ -1,12 +1,12 @@
 package com.bnk.accounts.ws;
 
 import com.bnk.accounts.*;
+import static com.bnk.accounts.TransferServiceTests.require;
 import com.bnk.utils.fp.IO;
 import com.bnk.utils.fp.Try;
 import java.net.InetSocketAddress;
 import java.util.Arrays;
 import static org.junit.Assert.*;
-import static com.bnk.accounts.TestBalance.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -39,11 +39,12 @@ public class WebTransferServiceTests {
     @Test
     public void should_correctly_perform_transfers_routine()
     {
-        final Try<Integer> result = ts.transfer(acc0.number(), acc1.number(), new Value(10)).run();
-        result.io(v -> IO.effect( () -> assertTrue(v >= 1)),
-                      ex -> IO.effect( () -> fail(ex.getMessage()))).run();
-        verifyBalance(ar, acc0, Value.of(90));
-        verifyBalance(ar, acc1, Value.of(210));
+        final IO<Integer> result = ts.transfer(acc0.number(), acc1.number(), new Value(10));
+        
+        require(result, p -> assertTrue( p >= 1)); 
+        
+        require(ar.account(acc0.number()), v -> assertEquals(new Value(90), v.balance()));
+        require(ar.account(acc1.number()), v -> assertEquals(new Value(210), v.balance()));
     }
     
     
