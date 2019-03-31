@@ -28,6 +28,8 @@ public abstract class Try<T> {
     
     public abstract IO<Nothing> io(Function<T, IO<Nothing>> success, Function<Exception, IO<Nothing>> failure);
     
+    public abstract T getElseThrow(RuntimeException t);
+    
     private static class Success<T> extends Try<T> {
         private final T value;
         
@@ -48,6 +50,11 @@ public abstract class Try<T> {
         @Override
         public IO<Nothing> io(Function<T, IO<Nothing>> success, Function<Exception, IO<Nothing>> failure) {
             return success.apply(value);
+        }
+
+        @Override
+        public T getElseThrow(RuntimeException t) {
+            return value;
         }
     }
     
@@ -72,6 +79,11 @@ public abstract class Try<T> {
         @Override
         public IO<Nothing> io(Function<T, IO<Nothing>> success, Function<Exception, IO<Nothing>> fail) {
             return fail.apply(exception);
+        }
+
+        @Override
+        public T getElseThrow(RuntimeException t) {
+            throw t;
         }
     }
 }

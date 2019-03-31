@@ -1,11 +1,13 @@
 package com.bnk.accounts;
 
+import static com.bnk.utils.fp.Assertions.require;
 import com.bnk.utils.fp.IO;
 import java.util.Arrays;
 import static org.junit.Assert.*;
 import com.bnk.utils.fp.Nothing;
 import java.util.function.Consumer;
 import org.junit.Assert;
+import org.junit.AssumptionViolatedException;
 import org.junit.Test;
 
 public class TransferServiceTests {
@@ -29,15 +31,6 @@ public class TransferServiceTests {
         require(value, p -> assertTrue(p >= 1));    
     }
     
-    public static <T> void require(IO<T> result, Consumer<T> assertion) {
-        result.onCallback(r -> r.io(v -> IO.effect(() -> assertion.accept(v)),
-                                    ex -> failIO()));
-    }
-    
-    private static IO<Nothing> failIO() {
-        return IO.effect(() -> Assert.fail());
-    }
-    
     @Test
     public void should_correctly_transfer_some_amount_from_one_account_to_another() {
         final Context ctx = createContext();
@@ -45,7 +38,7 @@ public class TransferServiceTests {
         ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), Value.of(10));
         
         
-        require(ctx.ar.account(ctx.acc0.number()), v -> assertEquals(new Value(190), v.balance()));
+        require(ctx.ar.account(ctx.acc0.number()), v -> assertEquals(new Value(90), v.balance()));
         require(ctx.ar.account(ctx.acc1.number()), v -> assertEquals(new Value(210), v.balance()));
     }
 
