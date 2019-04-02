@@ -28,7 +28,7 @@ public class TransferServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType(HttpClientTransferService.CONTENT_TYPE);
-        parseParams(request).io(p -> transfer(p, response),
+        parseParams(request).ioRun(p -> transfer(p, response),
                                       ex -> IO.effect(() -> {
                                           response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                                           write(response, "ERR:" + ex.getMessage());       
@@ -42,9 +42,9 @@ public class TransferServlet extends HttpServlet {
     }
     
     private static void write(HttpServletResponse response, Try<Integer> result) {
-        result.io(r -> IO.effect(() -> { response.setStatus(HttpServletResponse.SC_OK);
+        result.ioRun(r -> IO.effect(() -> { response.setStatus(HttpServletResponse.SC_OK);
                                          write(response, r.toString()); }),
-                  ex -> IO.effect(() -> { response.setStatus(HttpServletResponse.SC_CONFLICT); 
+                     ex -> IO.effect(() -> { response.setStatus(HttpServletResponse.SC_CONFLICT); 
                                           write(response, "ERR:" + ex.getMessage());}));
     }
     

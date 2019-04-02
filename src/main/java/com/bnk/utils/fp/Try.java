@@ -28,7 +28,12 @@ public abstract class Try<T> {
     
     public abstract IO<Nothing> io(Function<T, IO<Nothing>> success, Function<Exception, IO<Nothing>> failure);
     
+    public abstract void ioRun(Function<T, IO<Nothing>> success, Function<Exception, IO<Nothing>> failure);
+    
     public abstract T getElseThrow(RuntimeException t);
+    
+    public abstract T getElse(T elseValue);
+    
     
     private static class Success<T> extends Try<T> {
         private final T value;
@@ -51,11 +56,20 @@ public abstract class Try<T> {
         public IO<Nothing> io(Function<T, IO<Nothing>> success, Function<Exception, IO<Nothing>> failure) {
             return success.apply(value);
         }
+        
+        public void ioRun(Function<T, IO<Nothing>> success, Function<Exception, IO<Nothing>> failure) {
+            success.apply(value).onCallback(p -> {});
+        }
+        
 
         @Override
         public T getElseThrow(RuntimeException t) {
             return value;
         }
+
+        @Override
+        public T getElse(T elseValue) {
+            return value;        }
     }
     
     private static class Failure<T> extends Try<T> {
@@ -80,10 +94,20 @@ public abstract class Try<T> {
         public IO<Nothing> io(Function<T, IO<Nothing>> success, Function<Exception, IO<Nothing>> fail) {
             return fail.apply(exception);
         }
+        
+        @Override
+        public void ioRun(Function<T, IO<Nothing>> success, Function<Exception, IO<Nothing>> failure) {
+            failure.apply(exception).onCallback(p -> {});
+        }
 
         @Override
         public T getElseThrow(RuntimeException t) {
             throw t;
+        }
+
+        @Override
+        public T getElse(T elseValue) {
+           return elseValue;
         }
     }
 }

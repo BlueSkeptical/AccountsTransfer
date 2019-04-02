@@ -1,8 +1,8 @@
 package com.bnk.accounts;
 
 import static com.bnk.utils.fp.Assertions.require;
-import com.bnk.utils.fp.IO;
 import java.util.Arrays;
+import org.junit.Assert;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -22,30 +22,31 @@ public class TransferServiceTests {
     public void should_return_correct_tid_when_successfully_transfered_form_one_account_to_another() {
         final Context ctx = createContext();
      
-        final IO<Integer> value = ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), Value.of(10));
-        
-        require(value, p -> assertTrue(p >= 1));    
+        ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), Value.of(10))
+                .onCallback(r -> { Assert.assertEquals((int)r.getElseThrow(new RuntimeException()), 1);    
+                                });
     }
     
     @Test
     public void should_correctly_transfer_some_amount_from_one_account_to_another() {
         final Context ctx = createContext();
      
-        ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), Value.of(10));
-        
-        
-        require(ctx.ar.account(ctx.acc0.number()), v -> assertEquals(new Value(90), v.balance()));
-        require(ctx.ar.account(ctx.acc1.number()), v -> assertEquals(new Value(210), v.balance()));
+        ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), Value.of(10))
+                .onCallback(r -> {
+                        require(ctx.ar.account(ctx.acc0.number()), v -> assertEquals(new Value(90), v.balance()));
+                        require(ctx.ar.account(ctx.acc1.number()), v -> assertEquals(new Value(210), v.balance()));
+                });
     }
 
     @Test
     public void should_keep_old_balance_after_exception_when_amount_on_source_account_is_not_enough() {
         final Context ctx = createContext();
 
-        ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), new Value(110));
-        
-        require(ctx.ar.account(ctx.acc0.number()), v -> assertEquals(new Value(100), v.balance()));
-        require(ctx.ar.account(ctx.acc1.number()), v -> assertEquals(new Value(200), v.balance()));
+        ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), new Value(110))
+        .onCallback(r -> {
+                        require(ctx.ar.account(ctx.acc0.number()), v -> assertEquals(new Value(100), v.balance()));
+                        require(ctx.ar.account(ctx.acc1.number()), v -> assertEquals(new Value(200), v.balance()));
+                });
     }
     
     private static class Context {
