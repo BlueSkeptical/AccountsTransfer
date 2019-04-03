@@ -52,6 +52,17 @@ public class IOTest {
         Assert.assertEquals(0, (int)state.read());
     }
     
+    
+    @Test
+    public void should_return_fail_when_returning_FAIL() {
+        final IO<Integer> io = IO.of(() -> { return IO.fail(); });
+        final ReadWrite<Integer> state = new SimpleRW(1);
+        
+        io.onCallback(f -> { Assert.assertEquals(2, (int)f.getElse(2));
+                             state.write(0); });
+        Assert.assertEquals(0, (int)state.read());
+    }
+    
     @Test
     public void should_correctly_map() {
         final ReadWrite<String> rw = new SimpleRW("1");
@@ -79,7 +90,7 @@ public class IOTest {
         
         writeIO.onCallback(f -> {});
         
-        Assert.assertEquals(3, state.getValues().size());
+        Assert.assertEquals(3, state.valuesLogSize());
         
         Assert.assertEquals(0, (int)state.getValues().get(0));
         Assert.assertEquals(1, (int)state.getValues().get(1));
@@ -111,6 +122,10 @@ public class IOTest {
         
         public List<S> getValues() {
             return Collections.unmodifiableList(values);
+        }
+        
+        public int valuesLogSize() {
+            return values.size();
         }
         
         public SimpleRW(S initialValue) {

@@ -1,8 +1,13 @@
 package com.bnk.utils.fp;
 
+import static com.bnk.utils.fp.Try.failure;
+import static com.bnk.utils.fp.Try.success;
 import java.util.function.Function;
 
 public class IO<T> {
+    
+    private static final Object FAIL = new Object();
+    
     private final Task<T> task;
     
     private IO(Task<T> task) {
@@ -37,8 +42,24 @@ public class IO<T> {
         return IO.of(() -> s);
     } 
     
+    public static <S> S fail() {
+        return (S) FAIL;
+    }
+    
     public void onCallback(Callback<T> f) {
-        f.callback(Try.of(task));
+        
+        Try<T> result;
+        try {
+            result = success(task.run());
+        } catch (Exception ex) {
+            result = failure(ex);
+        }
+        if (result == FAIL) {
+            f.callback(failure(new IllegalStateException()));    
+        }
+        else {
+            f.callback(result);
+        }
     }
     
     public interface Task<S> {
