@@ -37,7 +37,7 @@ public class TransferServlet extends HttpServlet {
     
     private IO<Nothing> transfer(Params p, HttpServletResponse response) {
         return IO.effect(() -> { transferService.transfer(p.fromAccountNumber, p.toAccountNumber, p.amount)
-                                                .onCallback(r -> write(response, r));
+                                                .run(r -> write(response, r));
                                });
     }
     

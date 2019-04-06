@@ -6,7 +6,9 @@ import java.util.function.Function;
 
 public class IO<T> {
     
-    private static final Object FAIL = new Object();
+    private static final Object FAILED_RESULT = new Object();
+    
+    public static final Exception FAILED_RESULT_EXCEPION = new FailedException();
     
     private final Task<T> task;
     
@@ -43,10 +45,10 @@ public class IO<T> {
     } 
     
     public static <S> S fail() {
-        return (S) FAIL;
+        return (S) FAILED_RESULT;
     }
     
-    public void onCallback(Callback<T> f) {
+    public void run(Callback<T> f) {
         
         Try<T> result;
         try {
@@ -54,8 +56,8 @@ public class IO<T> {
         } catch (Exception ex) {
             result = failure(ex);
         }
-        if (result == FAIL) {
-            f.callback(failure(new IllegalStateException()));    
+        if (result == FAILED_RESULT) {
+            f.callback(failure(FAILED_RESULT_EXCEPION));    
         }
         else {
             f.callback(result);
@@ -68,6 +70,10 @@ public class IO<T> {
     
     public interface Callback<S> {
         void callback(Try<S> f);
+    }
+    
+    public static class FailedException extends RuntimeException {
+        
     }
     
 }

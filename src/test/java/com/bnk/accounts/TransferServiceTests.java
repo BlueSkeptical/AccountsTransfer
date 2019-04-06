@@ -23,7 +23,7 @@ public class TransferServiceTests {
         final Context ctx = createContext();
      
         ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), Value.of(10))
-                .onCallback(r -> { Assert.assertEquals((int)r.getElseThrow(new RuntimeException()), 1);    
+                .run(r -> { Assert.assertEquals(1, (int)r.getElseThrow(new RuntimeException()));    
                                 });
     }
     
@@ -32,7 +32,7 @@ public class TransferServiceTests {
         final Context ctx = createContext();
      
         ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), Value.of(10))
-                .onCallback(r -> {
+                .run(r -> {
                         require(ctx.ar.account(ctx.acc0.number()), v -> assertEquals(new Value(90), v.balance()));
                         require(ctx.ar.account(ctx.acc1.number()), v -> assertEquals(new Value(210), v.balance()));
                 });
@@ -43,7 +43,7 @@ public class TransferServiceTests {
         final Context ctx = createContext();
 
         ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), new Value(110))
-        .onCallback(r -> {
+        .run(r -> {
                         require(ctx.ar.account(ctx.acc0.number()), v -> assertEquals(new Value(100), v.balance()));
                         require(ctx.ar.account(ctx.acc1.number()), v -> assertEquals(new Value(200), v.balance()));
                 });

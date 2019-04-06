@@ -1,6 +1,7 @@
 package com.bnk.utils.fp;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public abstract class Try<T> {
     
@@ -12,9 +13,9 @@ public abstract class Try<T> {
        return new Failure<>(exception); 
     }
    
-    public static <T> Try<T> of(IO.Task<T> sup) {
+    public static <T> Try<T> of(Supplier<T> sup) {
         try {
-            return success(sup.run());
+            return success(sup.get());
         } catch (Exception ex) {
             return failure(ex);
         }
@@ -57,7 +58,7 @@ public abstract class Try<T> {
         }
         
         public void ioRun(Function<T, IO<Nothing>> success, Function<Exception, IO<Nothing>> failure) {
-            success.apply(value).onCallback(p -> {});
+            success.apply(value).run(p -> {});
         }
         
 
@@ -96,7 +97,7 @@ public abstract class Try<T> {
         
         @Override
         public void ioRun(Function<T, IO<Nothing>> success, Function<Exception, IO<Nothing>> failure) {
-            failure.apply(exception).onCallback(p -> {});
+            failure.apply(exception).run(p -> {});
         }
 
         @Override

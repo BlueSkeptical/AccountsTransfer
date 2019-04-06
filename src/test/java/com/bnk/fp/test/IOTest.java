@@ -15,7 +15,7 @@ public class IOTest {
         final ReadWrite<Integer> rw = new SimpleRW(1);
         final IO<Nothing> write = writeIO(rw, 2);
         
-        write.onCallback(f -> {});
+        write.run(f -> {});
         Assert.assertEquals(2, (int)rw.read());
     }
     
@@ -25,7 +25,7 @@ public class IOTest {
         final ReadWrite<Integer> state = new SimpleRW(1);
         final IO<Nothing> write = writeIO(rw, 2);
         
-        write.onCallback(f -> { Assert.assertEquals(f.getElseThrow(new IllegalStateException()), Nothing.instance);
+        write.run(f -> { Assert.assertEquals(f.getElseThrow(new IllegalStateException()), Nothing.instance);
                          state.write(0); });
         
         Assert.assertEquals(0, (int)state.read());
@@ -37,7 +37,7 @@ public class IOTest {
         final IO<Integer> read = readIO(rw);
         final ReadWrite<Integer> state = new SimpleRW(1);
         
-        read.onCallback(f -> {Assert.assertEquals(1, (int)f.getElseThrow(new IllegalStateException()));
+        read.run(f -> {Assert.assertEquals(1, (int)f.getElseThrow(new IllegalStateException()));
                               state.write(0);});
         Assert.assertEquals(0, (int)state.read());
     }
@@ -47,7 +47,7 @@ public class IOTest {
         final IO<Integer> io = IO.of(() -> {throw new RuntimeException();});
         final ReadWrite<Integer> state = new SimpleRW(1);
         
-        io.onCallback(f -> {Assert.assertEquals(2, (int)f.getElse(2));
+        io.run(f -> {Assert.assertEquals(2, (int)f.getElse(2));
                               state.write(0);});
         Assert.assertEquals(0, (int)state.read());
     }
@@ -58,7 +58,7 @@ public class IOTest {
         final IO<Integer> io = IO.of(() -> { return IO.fail(); });
         final ReadWrite<Integer> state = new SimpleRW(1);
         
-        io.onCallback(f -> { Assert.assertEquals(2, (int)f.getElse(2));
+        io.run(f -> { Assert.assertEquals(2, (int)f.getElse(2));
                              state.write(0); });
         Assert.assertEquals(0, (int)state.read());
     }
@@ -69,7 +69,7 @@ public class IOTest {
         final IO<String> io = readIO(rw);
         final IO<Integer> mapped = io.map(f -> Integer.parseInt(f))
                                      .map(f -> f - 1);
-        mapped.onCallback(f -> Assert.assertEquals(0, (int)f.getElseThrow(new RuntimeException())));
+        mapped.run(f -> Assert.assertEquals(0, (int)f.getElseThrow(new RuntimeException())));
     }
     
     
@@ -88,7 +88,7 @@ public class IOTest {
         
         Assert.assertEquals(1, state.getValues().size());
         
-        writeIO.onCallback(f -> {});
+        writeIO.run(f -> {});
         
         Assert.assertEquals(3, state.valuesLogSize());
         
