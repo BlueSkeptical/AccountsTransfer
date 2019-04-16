@@ -31,13 +31,10 @@ public class TransferServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {     
         parseParams(request)
         .flatMap(p -> transferService.transfer(p.fromAccountNumber, p.toAccountNumber, p.amount))
         .run(r -> write(response, r));
-        
-        //response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
    
     private static IO<Params> parseParams(HttpServletRequest request) {
@@ -47,7 +44,7 @@ public class TransferServlet extends HttpServlet {
     }
     
     private static void write(HttpServletResponse response, Try<Integer> result) {
-        result.ioRun(r -> IO.effect(() -> { response.setContentType(HttpClientTransferService.PLAIN_TEXT_CONTENT_TYPE);
+        result.onResult(r -> IO.effect(() -> { response.setContentType(HttpClientTransferService.PLAIN_TEXT_CONTENT_TYPE);
                                                 response.setStatus(HttpServletResponse.SC_OK);
                                                 write(response, r.toString()); }),
                      ex -> IO.effect(() -> { response.setContentType(HttpClientTransferService.PLAIN_TEXT_CONTENT_TYPE);

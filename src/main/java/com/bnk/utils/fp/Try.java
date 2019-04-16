@@ -1,7 +1,6 @@
 package com.bnk.utils.fp;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public abstract class Try<T> {
     
@@ -12,23 +11,14 @@ public abstract class Try<T> {
     public static <T> Try<T> failure(Exception exception) {
        return new Failure<>(exception); 
     }
-   
-    public static <T> Try<T> of(Supplier<T> sup) {
-        try {
-            return success(sup.get());
-        } catch (Exception ex) {
-            return failure(ex);
-        }
-    }
-    
-    
+       
     public abstract <S> Try<S> map(Function<T,S> fun);
     
     public abstract <S> Try<S> flatMap(Function<T,Try<S>> fun);
     
-    public abstract IO<Nothing> io(Function<T, IO<Nothing>> success, Function<Exception, IO<Nothing>> failure);
+    public abstract <S> IO<S> toIO(Function<T, IO<S>> success, Function<Exception, IO<S>> failure);
     
-    public abstract void ioRun(Function<T, IO<Nothing>> success, Function<Exception, IO<Nothing>> failure);
+    public abstract void onResult(Function<T, IO<Nothing>> success, Function<Exception, IO<Nothing>> failure);
     
     public abstract T getElseThrow(RuntimeException t);
     
@@ -53,15 +43,15 @@ public abstract class Try<T> {
         }  
 
         @Override
-        public IO<Nothing> io(Function<T, IO<Nothing>> success, Function<Exception, IO<Nothing>> failure) {
+        public <S> IO<S> toIO(Function<T, IO<S>> success, Function<Exception, IO<S>> failure) {
             return success.apply(value);
         }
         
-        public void ioRun(Function<T, IO<Nothing>> success, Function<Exception, IO<Nothing>> failure) {
+        @Override
+        public void onResult(Function<T, IO<Nothing>> success, Function<Exception, IO<Nothing>> failure) {
             success.apply(value).run(p -> {});
         }
         
-
         @Override
         public T getElseThrow(RuntimeException t) {
             return value;
@@ -91,12 +81,12 @@ public abstract class Try<T> {
         }
 
         @Override
-        public IO<Nothing> io(Function<T, IO<Nothing>> success, Function<Exception, IO<Nothing>> fail) {
+        public <S> IO<S> toIO(Function<T, IO<S>> success, Function<Exception, IO<S>> fail) {
             return fail.apply(exception);
         }
         
         @Override
-        public void ioRun(Function<T, IO<Nothing>> success, Function<Exception, IO<Nothing>> failure) {
+        public void onResult(Function<T, IO<Nothing>> success, Function<Exception, IO<Nothing>> failure) {
             failure.apply(exception).run(p -> {});
         }
 
