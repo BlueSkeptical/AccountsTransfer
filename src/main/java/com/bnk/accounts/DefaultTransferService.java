@@ -16,7 +16,9 @@ public class DefaultTransferService implements TransferService {
     public synchronized IO<Integer> transfer(AccountNumber from, AccountNumber to, Value amount) {
         final IO<? extends Account> accountFrom = repository.account(from);
         final IO<? extends Account> accountTo = repository.account(to);
-        return accountFrom.flatMap(a -> accountTo.flatMap(b -> transfer(a, b, amount)));
+        return accountFrom.flatMap(a -> 
+                                        accountTo.flatMap(b -> 
+                                                             transfer(a, b, amount)));
     }
 
     private IO<Integer> transfer(Account accountFrom, Account accountTo, Value amount) {

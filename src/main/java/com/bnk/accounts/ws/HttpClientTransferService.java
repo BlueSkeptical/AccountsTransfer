@@ -26,7 +26,7 @@ public class HttpClientTransferService implements TransferService {
     public static final String FROM_ACCOUNT_PARAMETER_NAME = "from";
     public static final String TO_ACCOUNT_PARAMETER_NAME = "to";
     public static final String AMOUNT_PARAMETER_NAME = "amount";
-    public static final String CONTENT_TYPE = "text/plain";
+    public static final String PLAIN_TEXT_CONTENT_TYPE = "text/plain";
     public static final String TRANSFER_RESOURCE_NAME = "transfer";
     public static final int OK_HTTP_CODE = 200;
     public static final int BUSINESS_LOGIC_CONFLICT_HTTP_CODE = 409;
@@ -57,7 +57,7 @@ public class HttpClientTransferService implements TransferService {
             final HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
             con.setRequestMethod("POST");
-            con.setRequestProperty("Content-Type", CONTENT_TYPE);
+            con.setRequestProperty("Content-Type", PLAIN_TEXT_CONTENT_TYPE);
             con.setConnectTimeout(CONNECT_TIMEOUT_MS);
             con.setReadTimeout(READ_TIMEOUT_MS);
 
