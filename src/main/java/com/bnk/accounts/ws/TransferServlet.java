@@ -6,17 +6,13 @@ import com.bnk.accounts.TransferException;
 import com.bnk.accounts.TransferService;
 import com.bnk.accounts.Value;
 import com.bnk.utils.fp.IO;
-import com.bnk.utils.fp.Nothing;
 import com.bnk.utils.fp.Try;
 import java.io.IOException;
-import java.util.function.Function;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.jetty.util.log.Log;
 
 public class TransferServlet extends HttpServlet {
 
@@ -53,11 +49,7 @@ public class TransferServlet extends HttpServlet {
     }
     
     
-    private static void write(HttpServletResponse response, String str) {
-        try {
+    private static void write(HttpServletResponse response, String str) throws IOException {
            response.getWriter().println(str);
-        } catch(Exception ex) {
-            throw new RuntimeException(ex);
-        }
     }
 }

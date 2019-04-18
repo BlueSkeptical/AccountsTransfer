@@ -10,20 +10,20 @@ public class IO<T> {
     
     public static final Exception FAILED_RESULT_EXCEPION = new FailedException();
     
+    public static final IO<Nothing> EMPTY = IO.of(() -> Nothing.instance);
+    
     private final Task<T> task;
     
     private IO(Task<T> task) {
         this.task = task;
     }
     
-    public static <S> IO<S> of(Task<S> f) {
-        return new IO(f);
+    public static <S,E extends Throwable> IO<S> of(CheckedTask<S, E> f) {
+        return new IO(uncheck(f));        
     }
     
-    public static IO<Nothing> empty = IO.of(() -> Nothing.instance);
-    
-    public static IO<Nothing> effect(Runnable commands) {
-        return IO.of(() -> { commands.run();
+    public static IO<Nothing> effect(CheckedRunnable f) {
+        return IO.of(() -> { f.run();
                              return Nothing.instance; });
     };
     
@@ -48,8 +48,7 @@ public class IO<T> {
         return (S) FAILED_RESULT;
     }
     
-    public void run(Callback<T> f) {
-        
+    public void run(Callback<T> f) {  
         Try<T> result;
         try {
             result = success(task.run());
@@ -68,12 +67,28 @@ public class IO<T> {
         S run();
     }
     
+    public interface CheckedTask<S,E extends Throwable> {
+        S run() throws E;
+    }
+    
+    public interface CheckedRunnable<E extends Throwable> {
+        void run() throws E;
+    }
+    
     public interface Callback<S> {
         void callback(Try<S> f);
     }
     
-    public static class FailedException extends RuntimeException {
-        
+    public static class FailedException extends RuntimeException {     
     }
     
+    private static <S, E extends Throwable> Task uncheck(CheckedTask<S, E> f) {
+        return () -> {
+            try {
+                return f.run();
+            } catch (Throwable ex) {
+                throw new RuntimeException(ex);
+            }
+        };
+    }
 }
