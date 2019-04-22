@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class WebTransferServiceTests {
+public class WebTransferServiceTest {
 
     static final int SERVER_PORT = 8080;
     static TransferServiceServer serviceServer;

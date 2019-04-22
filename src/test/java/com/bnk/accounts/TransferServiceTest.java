@@ -6,7 +6,7 @@ import org.junit.Assert;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-public class TransferServiceTests {
+public class TransferServiceTest {
 
     private static Context createContext() {
         final Account acc0 = Account.newInstance(new AccountNumber(0), new OwnerName("Joe", "Doe"));
