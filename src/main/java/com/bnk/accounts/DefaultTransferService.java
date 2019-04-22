@@ -1,7 +1,6 @@
 package com.bnk.accounts;
 
-import com.bnk.utils.fp.IO;
-import com.bnk.utils.fp.Try;
+import lajkonik.fp.IO;
 import com.bnk.utils.repository.Transaction;
 
 public class DefaultTransferService implements TransferService {

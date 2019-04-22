@@ -1,6 +1,6 @@
 package com.bnk.accounts;
 
-import static com.bnk.utils.fp.Assertions.require;
+import static lajkonik.fp.test.Assertions.require;
 import java.util.Arrays;
 import org.junit.Assert;
 import static org.junit.Assert.*;

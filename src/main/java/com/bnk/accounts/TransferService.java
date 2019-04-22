@@ -1,6 +1,6 @@
 package com.bnk.accounts;
 
-import com.bnk.utils.fp.IO;
+import lajkonik.fp.IO;
 
 /**
  * An API for transferring value between two accounts

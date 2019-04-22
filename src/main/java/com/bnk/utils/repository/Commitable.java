@@ -1,7 +1,7 @@
 
 package com.bnk.utils.repository;
 
-import com.bnk.utils.fp.IO;
+import lajkonik.fp.IO;
 
 
 public interface Commitable<T> {

@@ -1,8 +1,8 @@
 package com.bnk.accounts.ws;
 
 import com.bnk.accounts.*;
-import static com.bnk.utils.fp.Assertions.require;
-import com.bnk.utils.fp.IO;
+import static lajkonik.fp.test.Assertions.require;
+import lajkonik.fp.IO;
 import java.net.InetSocketAddress;
 import java.util.Arrays;
 import static org.junit.Assert.*;
