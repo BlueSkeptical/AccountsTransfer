@@ -33,8 +33,8 @@ public class TransferServlet extends HttpServlet {
         .run(r -> write(response, r));
     }
    
-    private static IO<Params> parseParams(HttpServletRequest request) {
-       return IO.of(() -> new Params(new AccountNumber(Long.parseLong(request.getParameter(HttpClientTransferService.FROM_ACCOUNT_PARAMETER_NAME))),
+    private static IO<TransferCommand> parseParams(HttpServletRequest request) {
+       return IO.of(() -> new TransferCommand(new AccountNumber(Long.parseLong(request.getParameter(HttpClientTransferService.FROM_ACCOUNT_PARAMETER_NAME))),
                                      new AccountNumber(Long.parseLong(request.getParameter(HttpClientTransferService.TO_ACCOUNT_PARAMETER_NAME))),
                                      new Value(Long.parseLong(request.getParameter(HttpClientTransferService.AMOUNT_PARAMETER_NAME)))));
     }
