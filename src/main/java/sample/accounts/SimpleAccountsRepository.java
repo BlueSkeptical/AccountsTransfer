@@ -44,12 +44,12 @@ public class SimpleAccountsRepository implements AccountsRepository {
     }
 
     @Override
-    public synchronized IO<Integer> commit(Transaction<Order> transaction) {
+    public IO<Integer> commit(Transaction<Order> transaction) {
         return IO.of(() -> { 
                 transaction.transactionLog().forEach((o) -> {
                     ordersLog.add(o);
-            });
-            return counter++;
+                });
+                return counter++;
         }); 
     }
 }
