@@ -32,7 +32,7 @@ public class TransferServlet extends HttpServlet {
         
         Try<Integer> result=null;
         synchronized(this) {
-            command.run();
+            result = command.run();
         }
         assert result != null;
         write(response, result);  
