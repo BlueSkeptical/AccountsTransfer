@@ -24,17 +24,15 @@ public class TransferServiceServer {
     public static final int DEFAULT_PORT = 8080;
     private static final int MAX_THREADS = 50;
     
-    private final AccountsRepository accountsRepository;
     private final TransferService transferService;
     private final int port;
     private final String basePath;
     
     private Server server;
     
-    public TransferServiceServer(int port, String basePath, AccountsRepository accountsRepository, TransferService transferService) {
+    public TransferServiceServer(int port, String basePath, TransferService transferService) {
         this.port = port;
         this.basePath = basePath;
-        this.accountsRepository = accountsRepository;
         this.transferService = transferService;
     }
 
@@ -69,7 +67,7 @@ public class TransferServiceServer {
                                                                    Account.snapshot(new AccountNumber(10002), new OwnerName("Mary", "Smith"), new Value(0)),
                                                                    Account.snapshot(new AccountNumber(10003), new OwnerName("Jan", "Kowalksi"), new Value(2000)) );
         final TransferService ts = new DefaultTransferService(ar);
-        final TransferServiceServer s = new TransferServiceServer(p, "",  ar, ts); //TODO implement an accounts repository reading from some persistent store, e.g. a file
+        final TransferServiceServer s = new TransferServiceServer(p, "", ts); //TODO implement an accounts repository reading from some persistent store, e.g. a file
         s.start();
         s.join();
     }

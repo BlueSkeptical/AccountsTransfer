@@ -43,7 +43,7 @@ public class WebTransferServiceTest {
         ar = new SimpleAccountsRepository(Arrays.asList(someInitialMoneyOrder0, someInitialMoneyOrder1), acc0, acc1);
         
         
-        serviceServer = new TransferServiceServer(SERVER_PORT, "", ar, new DefaultTransferService(ar));
+        serviceServer = new TransferServiceServer(SERVER_PORT, "", new DefaultTransferService(ar));
         serviceServer.start(); 
     }
     
