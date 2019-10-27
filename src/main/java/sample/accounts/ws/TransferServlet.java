@@ -20,11 +20,9 @@ public class TransferServlet extends HttpServlet {
     private static final Logger log = Logger.getLogger(TransferServlet.class.getName());
     
     private final ThreadSafeExecution ioExecution = new ThreadSafeExecution();
-    private final AccountsRepository accountsRepository;
     private final TransferService transferService;
     
-    public TransferServlet(AccountsRepository accountsRepository, TransferService transferSerivice) {
-        this.accountsRepository = accountsRepository;
+    public TransferServlet(TransferService transferSerivice) {
         this.transferService = transferSerivice;
     }
 

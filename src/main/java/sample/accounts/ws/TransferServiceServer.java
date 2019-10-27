@@ -51,7 +51,7 @@ public class TransferServiceServer {
         final ServletContextHandler context = new ServletContextHandler();
         context.setContextPath("/" + basePath); 
         
-        context.addServlet(new ServletHolder(new TransferServlet(accountsRepository, transferService)),
+        context.addServlet(new ServletHolder(new TransferServlet(transferService)),
                                              "/*");
         
         server.setHandler(context);
