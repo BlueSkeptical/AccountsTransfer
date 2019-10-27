@@ -13,7 +13,8 @@ import sample.accounts.DefaultOrder;
 import sample.accounts.TransferService;
 import sample.accounts.Account;
 import static lajkonik.fp.test.Assertions.require;
-import lajkonik.fp.IO;
+import lajkonik.fp.Try;
+
 import java.net.InetSocketAddress;
 import java.util.Arrays;
 import static org.junit.Assert.*;
@@ -49,12 +50,12 @@ public class WebTransferServiceTest {
     @Test
     public void should_correctly_perform_transfers_routine()
     {
-        final IO<Integer> result = ts.transfer(acc0.number(), acc1.number(), new Value(10));
+        final Try<Integer> result = ts.transfer(acc0.number(), acc1.number(), new Value(10)).run();
         
         require(result, p -> assertTrue( p >= 1)); 
         
-        require(ar.account(acc0.number()), v -> assertEquals(new Value(90), v.balance()));
-        require(ar.account(acc1.number()), v -> assertEquals(new Value(210), v.balance()));
+        require(ar.account(acc0.number()).run(), v -> assertEquals(new Value(90), v.balance()));
+        require(ar.account(acc1.number()).run(), v -> assertEquals(new Value(210), v.balance()));
     }
     
     

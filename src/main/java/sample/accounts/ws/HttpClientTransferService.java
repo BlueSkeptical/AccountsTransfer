@@ -1,12 +1,10 @@
 package sample.accounts.ws;
 
-import sample.accounts.Account;
 import sample.accounts.AccountNumber;
 import sample.accounts.TransferException;
 import sample.accounts.TransferService;
 import sample.accounts.Value;
 import lajkonik.fp.IO;
-import lajkonik.fp.Try;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,11 +39,11 @@ public class HttpClientTransferService implements TransferService {
 
     @Override
     public IO<Integer> transfer(AccountNumber from, AccountNumber to, Value amount) {
-       return  IO.of(()-> transfer_(from, to, amount));
+       return  IO.of(()-> transferImpl(from, to, amount));
     }
     
     
-    public Integer transfer_(AccountNumber from, AccountNumber to, Value amount) {
+    public Integer transferImpl(AccountNumber from, AccountNumber to, Value amount) {
         try {
             final URL url = new URL("http://"
                     + address.getHostString() + ":" + address.getPort()

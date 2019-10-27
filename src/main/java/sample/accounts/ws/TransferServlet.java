@@ -28,9 +28,9 @@ public class TransferServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {     
-        parseParams(request)
-        .flatMap(p -> transferService.transfer(p.fromAccountNumber, p.toAccountNumber, p.amount))
-        .run(r -> write(response, r));
+        final Try<Integer> result = parseParams(request).flatMap(p -> transferService.transfer(p.fromAccountNumber, p.toAccountNumber, p.amount))
+                                                        .run();
+        write(response, result);
     }
    
     private static IO<TransferCommand> parseParams(HttpServletRequest request) {
