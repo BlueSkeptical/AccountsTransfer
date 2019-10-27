@@ -5,6 +5,7 @@ import sample.accounts.AccountsRepository;
 import sample.accounts.TransferException;
 import sample.accounts.TransferService;
 import sample.accounts.Value;
+import sample.utils.ThreadSafeExecution;
 import lajkonik.fp.IO;
 import lajkonik.fp.Try;
 import java.io.IOException;
@@ -18,6 +19,7 @@ public class TransferServlet extends HttpServlet {
 
     private static final Logger log = Logger.getLogger(TransferServlet.class.getName());
     
+    private final ThreadSafeExecution ioExecution = new ThreadSafeExecution();
     private final AccountsRepository accountsRepository;
     private final TransferService transferService;
     
@@ -30,11 +32,8 @@ public class TransferServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {     
         final IO<Integer> command = parseParams(request).flatMap(p -> transferService.transfer(p.fromAccountNumber, p.toAccountNumber, p.amount));
         
-        Try<Integer> result=null;
-        synchronized(this) {
-            result = command.run();
-        }
-        assert result != null;
+        Try<Integer> result = ioExecution.execute(command);
+        
         write(response, result);  
     }
    
