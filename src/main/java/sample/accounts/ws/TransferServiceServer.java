@@ -65,7 +65,7 @@ public class TransferServiceServer {
     public static void main(String[] args) throws Exception {
         final int p = args.length > 0 ? Integer.parseInt(args[0]) : DEFAULT_PORT;
         final AccountsRepository ar = new SimpleAccountsRepository(new ArrayList<>(),
-                                                                   Account.snapshot(new AccountNumber(10001) {}, new OwnerName("Joe", "Doe"), new Value(1000)),
+                                                                   Account.snapshot(new AccountNumber(10001), new OwnerName("Joe", "Doe"), new Value(1000)),
                                                                    Account.snapshot(new AccountNumber(10002), new OwnerName("Mary", "Smith"), new Value(0)),
                                                                    Account.snapshot(new AccountNumber(10003), new OwnerName("Jan", "Kowalksi"), new Value(2000)) );
         final TransferService ts = new DefaultTransferService(ar);

@@ -45,13 +45,11 @@ public class HttpClientTransferService implements TransferService {
     
     public Integer transferImpl(AccountNumber from, AccountNumber to, Value amount) {
         try {
-            final URL url = new URL("http://"
-                    + address.getHostString() + ":" + address.getPort()
-                    + basePath
-                    + "/" + TRANSFER_RESOURCE_NAME
-                    + "?" + FROM_ACCOUNT_PARAMETER_NAME + "=" + from
-                    + "&" + TO_ACCOUNT_PARAMETER_NAME + "=" + to
-                    + "&" + AMOUNT_PARAMETER_NAME + "=" + amount);
+            final java.net.URL url = new ServiceURL(address,
+                                             basePath + "/" + TRANSFER_RESOURCE_NAME,
+                                             new ServiceURL.Param(FROM_ACCOUNT_PARAMETER_NAME, from),
+                                             new ServiceURL.Param(TO_ACCOUNT_PARAMETER_NAME, to),
+                                             new ServiceURL.Param(AMOUNT_PARAMETER_NAME, amount)).toURL();        
             final HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
             con.setRequestMethod("POST");
