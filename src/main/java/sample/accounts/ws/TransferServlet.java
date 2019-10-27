@@ -32,8 +32,8 @@ public class TransferServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {     
         final IO<Integer> command = parseParams(request).flatMap(p -> transferService.transfer(p.fromAccountNumber, p.toAccountNumber, p.amount));
         
-        Try<Integer> result = ioExecution.execute(command);
-        
+        final Try<Integer> result = ioExecution.execute(command);
+
         write(response, result);  
     }
    
