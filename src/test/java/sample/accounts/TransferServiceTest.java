@@ -56,9 +56,9 @@ public class TransferServiceTest {
 
         final Try<Integer> result = ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), Value.of(110)).run();
         result.onResult(r -> IO.effect(() -> { Assert.fail(); }),
-                        e -> IO.effect(() ->{ Assert.assertTrue(e instanceof TransferException);
-                                              require(ctx.ar.account(ctx.acc0.number()).run(), v -> assertEquals(new Value(100), v.balance()));
-                                              require(ctx.ar.account(ctx.acc1.number()).run(), v -> assertEquals(new Value(200), v.balance()));} ));
+                        e -> IO.effect(() -> { Assert.assertTrue(e instanceof TransferException);
+                                               require(ctx.ar.account(ctx.acc0.number()).run(), v -> assertEquals(new Value(100), v.balance()));
+                                               require(ctx.ar.account(ctx.acc1.number()).run(), v -> assertEquals(new Value(200), v.balance()));} ));
     }
     
     private static class Context {

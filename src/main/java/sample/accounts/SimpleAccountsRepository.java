@@ -38,17 +38,16 @@ public class SimpleAccountsRepository implements AccountsRepository {
                                                         .orElseThrow(() -> new TransferException("Not found"));
     }
     
-
     @Override
     public List<Order> queryForAccount(AccountNumber accountNumber) {
         return ordersLog.stream().filter(o -> o.accountNumber().equals(accountNumber)).collect(Collectors.toList());
     }
 
     @Override
-    public IO<Integer> commit(Transaction<Order> transaction) {
+    public synchronized IO<Integer> commit(Transaction<Order> transaction) {
         return IO.of(() -> { 
                 transaction.transactionLog().forEach((o) -> {
-                ordersLog.add(o);
+                    ordersLog.add(o);
             });
             return counter++;
         }); 
