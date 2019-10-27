@@ -49,18 +49,18 @@ public class TransferServiceTest {
                                                require(ctx.ar.account(ctx.acc1.number()).run(), v -> assertEquals(new Value(210), v.balance())); }),
                         e -> {throw new RuntimeException(e);} );
     }
-/*
+
     @Test
     public void should_keep_old_balance_after_exception_when_amount_on_source_account_is_not_enough() {
         final Context ctx = createContext();
 
-        ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), new Value(110))
-        .run(r -> {
-                        require(ctx.ar.account(ctx.acc0.number()), v -> assertEquals(new Value(100), v.balance()));
-                        require(ctx.ar.account(ctx.acc1.number()), v -> assertEquals(new Value(200), v.balance()));
-                });
+        final Try<Integer> result = ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), Value.of(110)).run();
+        result.onResult(r -> IO.effect(() -> { Assert.fail(); }),
+                        e -> IO.effect(() ->{ Assert.assertTrue(e instanceof TransferException);
+                                              require(ctx.ar.account(ctx.acc0.number()).run(), v -> assertEquals(new Value(100), v.balance()));
+                                              require(ctx.ar.account(ctx.acc1.number()).run(), v -> assertEquals(new Value(200), v.balance()));} ));
     }
-    */
+    
     private static class Context {
         public final Account acc0;
         public final Account acc1;
