@@ -17,8 +17,6 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import lajkonik.fp.*;
 
-import junit.framework.AssertionFailedError;
-
 public class TransferServiceTest {
 
     private static Context createContext() {

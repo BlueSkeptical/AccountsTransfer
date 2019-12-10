@@ -1,7 +1,6 @@
 package sample.accounts.ws;
 
 import sample.accounts.AccountNumber;
-import sample.accounts.AccountsRepository;
 import sample.accounts.TransferException;
 import sample.accounts.TransferService;
 import sample.accounts.Value;
@@ -9,15 +8,13 @@ import sample.utils.ThreadSafeExecution;
 import lajkonik.fp.IO;
 import lajkonik.fp.Try;
 import java.io.IOException;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@SuppressWarnings("serial")
 public class TransferServlet extends HttpServlet {
-
-    private static final Logger log = Logger.getLogger(TransferServlet.class.getName());
     
     private final ThreadSafeExecution ioExecution = new ThreadSafeExecution();
     private final TransferService transferService;

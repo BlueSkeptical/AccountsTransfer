@@ -1,17 +1,19 @@
 
 package sample.utils.repository;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
+
+import sample.accounts.Order;
 
 
 public interface Transaction<T> {
     
-    Transaction<T> add( T command);
+    Transaction<T> add(T command);
     
     List<T> transactionLog();
     
-    static Transaction empty() {
-        return new SimpleTransaction<>( Collections.EMPTY_LIST );
+    static <U extends Order> Transaction<U>  empty() {
+        return new SimpleTransaction<U>(new ArrayList<U>());
     }
 }

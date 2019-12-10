@@ -1,7 +1,6 @@
 package sample.utils.repository;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class SimpleTransaction<T> implements Transaction<T> {
@@ -13,10 +12,7 @@ public class SimpleTransaction<T> implements Transaction<T> {
         this.log = log;
     }
     
-    public static Transaction newInstace() {
-        return new SimpleTransaction<>( Collections.EMPTY_LIST );
-    }
-    
+
     @Override
     public List<T> transactionLog() {
         return log;
