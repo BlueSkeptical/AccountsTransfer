@@ -12,7 +12,7 @@ public class DefaultTransferService implements TransferService {
     }
 
     @Override
-    public synchronized IO<Integer> transfer(AccountNumber from, AccountNumber to, Value amount) {
+    public IO<Integer> transfer(AccountNumber from, AccountNumber to, Value amount) {
         final IO<? extends Account> accountFrom = repository.account(from);
         final IO<? extends Account> accountTo = repository.account(to);
         return accountFrom.flatMap(a -> 

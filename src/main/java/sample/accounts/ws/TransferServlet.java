@@ -34,14 +34,14 @@ public class TransferServlet extends HttpServlet {
    
     private static IO<TransferCommand> parseParams(HttpServletRequest request) {
        return IO.of(() -> new TransferCommand(new AccountNumber(Long.parseLong(request.getParameter(HttpClientTransferService.FROM_ACCOUNT_PARAMETER_NAME))),
-                                     new AccountNumber(Long.parseLong(request.getParameter(HttpClientTransferService.TO_ACCOUNT_PARAMETER_NAME))),
-                                     new Value(Long.parseLong(request.getParameter(HttpClientTransferService.AMOUNT_PARAMETER_NAME)))));
+                                              new AccountNumber(Long.parseLong(request.getParameter(HttpClientTransferService.TO_ACCOUNT_PARAMETER_NAME))),
+                                              new Value(Long.parseLong(request.getParameter(HttpClientTransferService.AMOUNT_PARAMETER_NAME)))));
     }
     
     private static void write(HttpServletResponse response, Try<Integer> result) {
         result.onResult(r -> IO.effect(() -> { response.setContentType(HttpClientTransferService.PLAIN_TEXT_CONTENT_TYPE);
-                                                response.setStatus(HttpServletResponse.SC_OK);
-                                                write(response, r.toString()); }),
+                                               response.setStatus(HttpServletResponse.SC_OK);
+                                               write(response, r.toString()); }),
                      ex -> IO.effect(() -> { response.setContentType(HttpClientTransferService.PLAIN_TEXT_CONTENT_TYPE);
                                           response.setStatus(ex instanceof TransferException ? HttpServletResponse.SC_CONFLICT : HttpServletResponse.SC_INTERNAL_SERVER_ERROR); 
                                           write(response, "ERR:" + ex.getMessage());}));
