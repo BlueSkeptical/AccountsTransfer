@@ -24,7 +24,7 @@ public class TransferServiceTest {
         final Account acc1 = new DefaultAccount(new AccountNumber(1), new OwnerName("Mary", "Smith"));
         final Order someInitialMoneyOrder0 = new DefaultOrder(acc0.number(), new Value(100));
         final Order someInitialMoneyOrder1 = new DefaultOrder(acc1.number(), new Value(200));
-        final AccountsRepository ar = new SimpleAccountsRepository(Arrays.asList(someInitialMoneyOrder0, someInitialMoneyOrder1), acc0, acc1);
+        final AccountsRepository ar = new SimpleAccountsRepository(Arrays.asList(acc0, acc1), Arrays.asList(someInitialMoneyOrder0, someInitialMoneyOrder1));
         final TransferService ts = new DefaultTransferService(ar);
         return new Context(acc0, acc1, ar, ts);
     }

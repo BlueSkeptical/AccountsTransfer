@@ -33,7 +33,7 @@ public interface Account {
         return new DefaultAccount(id, ownerName, Collections.EMPTY_LIST);
     }
     
-    public static Account snapshot(AccountNumber id, OwnerName ownerName, Value p_balance ) {
+    public static Account snapshot(AccountNumber id, OwnerName ownerName, Value p_balance) {
         return new DefaultAccount(id, ownerName, Arrays.asList( new DefaultOrder(id, p_balance)));
     }
 

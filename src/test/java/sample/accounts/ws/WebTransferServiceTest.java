@@ -40,7 +40,7 @@ public class WebTransferServiceTest {
         
         final Order someInitialMoneyOrder0 = new DefaultOrder(acc0.number(), new Value(100));
         final Order someInitialMoneyOrder1 = new DefaultOrder(acc1.number(), new Value(200));
-        ar = new SimpleAccountsRepository(Arrays.asList(someInitialMoneyOrder0, someInitialMoneyOrder1), acc0, acc1);
+        ar = new SimpleAccountsRepository(Arrays.asList(acc0, acc1), Arrays.asList(someInitialMoneyOrder0, someInitialMoneyOrder1));
         
         
         serviceServer = new TransferServiceServer(SERVER_PORT, "", new DefaultTransferService(ar));

@@ -3,12 +3,15 @@ package sample.accounts.ws;
 import sample.accounts.Account;
 import sample.accounts.AccountNumber;
 import sample.accounts.AccountsRepository;
+import sample.accounts.DefaultOrder;
 import sample.accounts.DefaultTransferService;
 import sample.accounts.OwnerName;
 import sample.accounts.SimpleAccountsRepository;
 import sample.accounts.TransferService;
 import sample.accounts.Value;
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -62,10 +65,10 @@ public class TransferServiceServer {
     
     public static void main(String[] args) throws Exception {
         final int p = args.length > 0 ? Integer.parseInt(args[0]) : DEFAULT_PORT;
-        final AccountsRepository ar = new SimpleAccountsRepository(new ArrayList<>(),
-                                                                   Account.snapshot(new AccountNumber(10001), new OwnerName("Joe", "Doe"), new Value(1000)),
-                                                                   Account.snapshot(new AccountNumber(10002), new OwnerName("Mary", "Smith"), new Value(0)),
-                                                                   Account.snapshot(new AccountNumber(10003), new OwnerName("Jan", "Kowalksi"), new Value(2000)) );
+        final AccountsRepository ar = new SimpleAccountsRepository(Arrays.asList(Account.newInstance(new AccountNumber(10001), new OwnerName("Joe", "Doe")),
+                                                                                 Account.newInstance(new AccountNumber(10002), new OwnerName("Mary", "Smith")),
+                                                                                 Account.newInstance(new AccountNumber(10003), new OwnerName("Jan", "Kowalksi"))),
+                                                                   Arrays.asList(new DefaultOrder(new AccountNumber(10001), new Value(1000))));
         final TransferService ts = new DefaultTransferService(ar);
         final TransferServiceServer s = new TransferServiceServer(p, "", ts); //TODO implement an accounts repository reading from some persistent store, e.g. a file
         s.start();

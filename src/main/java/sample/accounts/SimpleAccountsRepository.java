@@ -2,8 +2,8 @@ package sample.accounts;
 
 import lajkonik.fp.IO;
 import sample.utils.repository.Transaction;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,9 +19,9 @@ public class SimpleAccountsRepository implements AccountsRepository {
     private int counter = 1;
     
 
-    public SimpleAccountsRepository(List<Order> ordersLog, Account... accounts) {
+    public SimpleAccountsRepository(List<Account> accounts, List<Order> ordersLog) {
         this.ordersLog = new ArrayList<>(ordersLog);
-        this.accounts = Arrays.asList(accounts);
+        this.accounts = new ArrayList<>(accounts);
     }
 
     @Override
