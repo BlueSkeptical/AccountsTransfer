@@ -6,6 +6,7 @@ import sample.utils.repository.Transaction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -26,20 +27,17 @@ public class SimpleAccountsRepository implements AccountsRepository {
 
     @Override
     public IO<? extends Account> account(AccountNumber number) {
-        return IO.of(()-> { try { return getAccount(number);
-                                } catch (Exception ex ) { 
-                                                            throw new RuntimeException(ex);}}); //TODO rework
+        return IO.of(()->  getAccount(number).orElseThrow(() -> new TransferException("Not found")) ); 
     }
 
-    private Account getAccount(AccountNumber number) {
+    private Optional<Account> getAccount(AccountNumber number) {
         return accounts.stream().filter( p -> p.number().equals(number))
-                                                        .findFirst()
-                                                        .map(p -> new DefaultAccount(p.number(), p.ownerName(), queryForAccount(number)))
-                                                        .orElseThrow(() -> new TransferException("Not found"));
+                                .findFirst()
+                                .map(p -> new DefaultAccount(p.number(), p.ownerName(), queryOrders(number)));
     }
     
     @Override
-    public List<Order> queryForAccount(AccountNumber accountNumber) {
+    public List<Order> queryOrders(AccountNumber accountNumber) {
         return ordersLog.stream().filter(o -> o.accountNumber().equals(accountNumber)).collect(Collectors.toList());
     }
 
