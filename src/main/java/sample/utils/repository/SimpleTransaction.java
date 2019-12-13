@@ -2,6 +2,7 @@ package sample.utils.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SimpleTransaction<T> implements Transaction<T> {
     
@@ -9,7 +10,7 @@ public class SimpleTransaction<T> implements Transaction<T> {
     
     SimpleTransaction( List<T> log )
     {
-        this.log = log;
+        this.log = Objects.requireNonNull(log);
     }
     
 

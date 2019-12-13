@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
+import java.util.Objects;
 
 /**
  * The transfer web service client
@@ -32,8 +33,8 @@ public class HttpClientTransferService implements TransferService {
     private final String basePath;
 
     HttpClientTransferService(InetSocketAddress address, String basePath) {
-        this.address = address;
-        this.basePath = basePath;
+        this.address = Objects.requireNonNull(address);
+        this.basePath = Objects.requireNonNull(basePath);
     }
 
     @Override

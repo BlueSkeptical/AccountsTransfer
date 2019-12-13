@@ -2,6 +2,7 @@ package sample.accounts;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class DefaultAccount implements Account {
     
@@ -9,17 +10,17 @@ public class DefaultAccount implements Account {
     
     private final AccountNumber number;
     private final OwnerName ownerName;
-    private final List< Order > balanceTransactions;
+    private final List<Order> balanceTransactions;
     
     
     public DefaultAccount(AccountNumber id, OwnerName ownerName) {
         this(id, ownerName, Collections.EMPTY_LIST );  
     }
     
-    public DefaultAccount(AccountNumber id, OwnerName ownerName, List< Order > balanceTransactions) {
-        this.number = id;
-        this.ownerName = ownerName;
-        this.balanceTransactions = balanceTransactions;
+    public DefaultAccount(AccountNumber id, OwnerName ownerName, List<Order> balanceTransactions) {
+        this.number = Objects.requireNonNull(id);
+        this.ownerName = Objects.requireNonNull(ownerName);
+        this.balanceTransactions = Objects.requireNonNull(balanceTransactions);
     }
     
     @Override

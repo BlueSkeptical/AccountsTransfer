@@ -8,6 +8,8 @@ import sample.utils.ThreadSafeExecution;
 import lajkonik.fp.IO;
 import lajkonik.fp.Try;
 import java.io.IOException;
+import java.util.Objects;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +22,7 @@ public class TransferServlet extends HttpServlet {
     private final TransferService transferService;
     
     public TransferServlet(TransferService transferSerivice) {
-        this.transferService = transferSerivice;
+        this.transferService = Objects.requireNonNull(transferSerivice);
     }
 
     @Override

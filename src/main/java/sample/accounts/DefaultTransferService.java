@@ -2,13 +2,14 @@ package sample.accounts;
 
 import lajkonik.fp.IO;
 import sample.utils.repository.Transaction;
+import java.util.Objects;
 
 public class DefaultTransferService implements TransferService {
 
     private final AccountsRepository repository;
 
     public DefaultTransferService(AccountsRepository repository) {
-        this.repository = repository;
+        this.repository = Objects.requireNonNull(repository);
     }
 
     @Override

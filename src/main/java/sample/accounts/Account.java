@@ -16,7 +16,7 @@ public interface Account {
 
     
     /**
-     * Owner's name
+     * The owner's name
      * 
      * @return owner name
      */

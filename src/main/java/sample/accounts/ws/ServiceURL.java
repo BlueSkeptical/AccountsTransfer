@@ -2,6 +2,7 @@ package sample.accounts.ws;
 
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.util.Objects;
 
 public class ServiceURL {
     private final InetSocketAddress addr;
@@ -9,8 +10,8 @@ public class ServiceURL {
     private final Param[] params;
 
     public ServiceURL(InetSocketAddress addr, String basePath, Param... params) {
-        this.addr = addr;
-        this.basePath = basePath;
+        this.addr = Objects.requireNonNull(addr);
+        this.basePath = Objects.requireNonNull(basePath);
         this.params = params;
     }
 

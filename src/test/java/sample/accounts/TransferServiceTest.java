@@ -41,8 +41,7 @@ public class TransferServiceTest {
     public void should_correctly_transfer_some_amount_from_one_account_to_another() {
         final Context ctx = createContext();
      
-        final Try<Integer> result = ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), Value.of(10))
-                .run();
+        final Try<Integer> result = ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), Value.of(10)) .run();
         result.onResult(r -> IO.effect(() -> { require(ctx.ar.account(ctx.acc0.number()).run(), v -> assertEquals(new Value(90), v.balance()));
                                                require(ctx.ar.account(ctx.acc1.number()).run(), v -> assertEquals(new Value(210), v.balance())); }),
                         e -> {throw new RuntimeException(e);} );

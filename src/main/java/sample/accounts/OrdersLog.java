@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface OrdersLog {
     
-    List< Order > queryForAccount(AccountNumber accountNumber);
+    List<Order> queryForAccount(AccountNumber accountNumber);
 }

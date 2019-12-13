@@ -11,6 +11,7 @@ import sample.accounts.TransferService;
 import sample.accounts.Value;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -35,8 +36,8 @@ public class TransferServiceServer {
     
     public TransferServiceServer(int port, String basePath, TransferService transferService) {
         this.port = port;
-        this.basePath = basePath;
-        this.transferService = transferService;
+        this.basePath = Objects.requireNonNull(basePath);
+        this.transferService = Objects.requireNonNull(transferService);
     }
 
     public void start() throws Exception {
