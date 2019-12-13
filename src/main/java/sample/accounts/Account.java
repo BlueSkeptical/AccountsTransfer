@@ -30,7 +30,7 @@ public interface Account {
     
     
     public static Account newInstance(AccountNumber id, OwnerName ownerName ) {
-        return new DefaultAccount(id, ownerName, Collections.EMPTY_LIST);
+        return new DefaultAccount(id, ownerName, Collections.emptyList());
     }
     
     public static Account snapshot(AccountNumber id, OwnerName ownerName, Value p_balance) {

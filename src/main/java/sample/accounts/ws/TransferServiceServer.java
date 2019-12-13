@@ -9,9 +9,10 @@ import sample.accounts.OwnerName;
 import sample.accounts.SimpleAccountsRepository;
 import sample.accounts.TransferService;
 import sample.accounts.Value;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
+
+import javax.servlet.Servlet;
 
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -28,16 +29,16 @@ public class TransferServiceServer {
     public static final int DEFAULT_PORT = 8080;
     private static final int MAX_THREADS = 50;
     
-    private final TransferService transferService;
+    private final Servlet servlet;
     private final int port;
     private final String basePath;
     
     private Server server;
     
-    public TransferServiceServer(int port, String basePath, TransferService transferService) {
+    public TransferServiceServer(int port, String basePath, Servlet servlet) {
         this.port = port;
         this.basePath = Objects.requireNonNull(basePath);
-        this.transferService = Objects.requireNonNull(transferService);
+        this.servlet = Objects.requireNonNull(servlet);
     }
 
     public void start() throws Exception {
@@ -53,7 +54,7 @@ public class TransferServiceServer {
         final ServletContextHandler context = new ServletContextHandler();
         context.setContextPath("/" + basePath); 
         
-        context.addServlet(new ServletHolder(new TransferServlet(transferService)),
+        context.addServlet(new ServletHolder(servlet),
                                              "/*");
         
         server.setHandler(context);
@@ -71,7 +72,7 @@ public class TransferServiceServer {
                                                                                  Account.newInstance(new AccountNumber(10003), new OwnerName("Jan", "Kowalksi"))),
                                                                    Arrays.asList(new DefaultOrder(new AccountNumber(10001), new Value(1000))));
         final TransferService ts = new DefaultTransferService(ar);
-        final TransferServiceServer s = new TransferServiceServer(p, "", ts); //TODO implement an accounts repository reading from some persistent store, e.g. a file
+        final TransferServiceServer s = new TransferServiceServer(p, "", new TransferServlet(ts));
         s.start();
         s.join();
     }

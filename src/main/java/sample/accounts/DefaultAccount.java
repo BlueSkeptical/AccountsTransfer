@@ -14,7 +14,7 @@ public class DefaultAccount implements Account {
     
     
     public DefaultAccount(AccountNumber id, OwnerName ownerName) {
-        this(id, ownerName, Collections.EMPTY_LIST );  
+        this(id, ownerName, Collections.emptyList() );  
     }
     
     public DefaultAccount(AccountNumber id, OwnerName ownerName, List<Order> balanceTransactions) {
