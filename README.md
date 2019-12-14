@@ -10,7 +10,7 @@ $ mvn test
 
 ```
 
-## Web service usage example for a client
+## Web service usage example
 
 Sending 100 coins from the account 1001 to the account 1002:
 
@@ -27,7 +27,7 @@ Sending 100 coins from the account 1001 to the account 1002:
 ```java
 
 final TransferService ts = new HttpClientTransferService(new InetSocketAddress("localhost", 8080));
-final Try<Integer> result = ts.transfer(new AccountNumber(1001), new AccountNumber(1002), new Value(10)).run();
+final Try<Integer> result = ts.transfer(new AccountNumber(1001), new AccountNumber(1002), new Value(100)).run();
 // in case of success of transfer the result will contain the transaction's number
 
 ```
