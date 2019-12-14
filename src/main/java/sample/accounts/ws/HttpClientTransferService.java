@@ -33,7 +33,7 @@ public class HttpClientTransferService implements TransferService {
     private final String basePath;
 
     public HttpClientTransferService(InetSocketAddress address) {
-        this(address, "");
+        this(address, "transfers");
     } 
 
     public HttpClientTransferService(InetSocketAddress address, String basePath) {

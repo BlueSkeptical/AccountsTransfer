@@ -27,6 +27,7 @@ import org.eclipse.jetty.util.thread.QueuedThreadPool;
 public class TransferServiceServer {
 
     public static final int DEFAULT_PORT = 8080;
+    public static final String TRANSFERS_BASE_PATH = "transfers";
     private static final int MAX_THREADS = 50;
     
     private final Servlet servlet;
@@ -35,6 +36,10 @@ public class TransferServiceServer {
     
     private Server server;
     
+    public TransferServiceServer(int port, Servlet servlet) {
+        this(port, TRANSFERS_BASE_PATH, servlet);
+    }
+
     public TransferServiceServer(int port, String basePath, Servlet servlet) {
         this.port = port;
         this.basePath = Objects.requireNonNull(basePath);
@@ -72,7 +77,7 @@ public class TransferServiceServer {
                                                                                  Account.newInstance(new AccountNumber(10003), new OwnerName("Jan", "Kowalksi"))),
                                                                    Arrays.asList(new DefaultOrder(new AccountNumber(10001), new Value(1000))));
         final TransferService ts = new DefaultTransferService(ar);
-        final TransferServiceServer s = new TransferServiceServer(p, "", new TransferServlet(ts));
+        final TransferServiceServer s = new TransferServiceServer(p, new TransferServlet(ts));
         s.start();
         s.join();
     }
