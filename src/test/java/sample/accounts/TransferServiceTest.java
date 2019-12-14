@@ -8,7 +8,6 @@ import sample.accounts.SimpleAccountsRepository;
 import sample.accounts.Value;
 import sample.accounts.AccountsRepository;
 import sample.accounts.TransferService;
-import sample.accounts.DefaultOrder;
 import sample.accounts.Account;
 import static lajkonik.fp.test.Assertions.require;
 import java.util.Arrays;
@@ -42,6 +41,8 @@ public class TransferServiceTest {
         final Context ctx = createContext();
      
         final Try<Integer> result = ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), Value.of(10)) .run();
+        require(ctx.ar.account(ctx.acc0.number()).run(), v -> assertEquals(new Value(90), v.balance()));
+
         result.onResult(r -> IO.effect(() -> { require(ctx.ar.account(ctx.acc0.number()).run(), v -> assertEquals(new Value(90), v.balance()));
                                                require(ctx.ar.account(ctx.acc1.number()).run(), v -> assertEquals(new Value(210), v.balance())); }),
                         e -> {throw new RuntimeException(e);} );

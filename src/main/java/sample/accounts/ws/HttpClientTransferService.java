@@ -32,7 +32,11 @@ public class HttpClientTransferService implements TransferService {
     private final InetSocketAddress address;
     private final String basePath;
 
-    HttpClientTransferService(InetSocketAddress address, String basePath) {
+    public HttpClientTransferService(InetSocketAddress address) {
+        this(address, "");
+    } 
+
+    public HttpClientTransferService(InetSocketAddress address, String basePath) {
         this.address = Objects.requireNonNull(address);
         this.basePath = Objects.requireNonNull(basePath);
     }
