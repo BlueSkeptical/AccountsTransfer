@@ -23,7 +23,7 @@ public class Value implements Comparable<Value> {
     }
     
     public Value negate() {
-        return new Value( -value );
+        return new Value(-value);
     }
     
     @Override

@@ -1,7 +1,5 @@
 package sample.accounts;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 public class DefaultAccount implements Account {
@@ -10,17 +8,17 @@ public class DefaultAccount implements Account {
     
     private final AccountNumber number;
     private final OwnerName ownerName;
-    private final List<Order> balanceTransactions;
+    private final Value balance;
     
     
     public DefaultAccount(AccountNumber id, OwnerName ownerName) {
-        this(id, ownerName, Collections.emptyList() );  
+        this(id, ownerName, Value.ZERO);  
     }
     
-    public DefaultAccount(AccountNumber id, OwnerName ownerName, List<Order> balanceTransactions) {
+    public DefaultAccount(AccountNumber id, OwnerName ownerName, Value balance) {
         this.number = Objects.requireNonNull(id);
         this.ownerName = Objects.requireNonNull(ownerName);
-        this.balanceTransactions = Objects.requireNonNull(balanceTransactions);
+        this.balance = Objects.requireNonNull(balance);
     }
     
     @Override
@@ -35,7 +33,7 @@ public class DefaultAccount implements Account {
     
     @Override
     public Value balance() {
-        return balanceTransactions.stream().map( p -> p.amount()).reduce(new Value(0), (x,y) ->  x.add(y));
+        return balance;
     }
     
     @Override

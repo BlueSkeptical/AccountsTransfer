@@ -33,7 +33,11 @@ public class SimpleAccountsRepository implements AccountsRepository {
     private Optional<Account> getAccount(AccountNumber number) {
         return accounts.stream().filter( p -> p.number().equals(number))
                                 .findFirst()
-                                .map(p -> new DefaultAccount(p.number(), p.ownerName(), queryOrders(number)));
+                                .map(p -> new DefaultAccount(p.number(), p.ownerName(), calculateBalance(queryOrders(number))));
+    }
+
+    private static Value calculateBalance(List<Order> orders) {
+        return orders.stream().map( p -> p.amount()).reduce(new Value(0), (x,y) ->  x.add(y));
     }
     
     @Override

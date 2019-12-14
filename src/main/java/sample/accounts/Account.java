@@ -29,12 +29,12 @@ public interface Account {
     Value balance();
     
     
-    public static Account newInstance(AccountNumber id, OwnerName ownerName ) {
-        return new DefaultAccount(id, ownerName, Collections.emptyList());
+    public static Account newInstance(AccountNumber id, OwnerName ownerName) {
+        return new DefaultAccount(id, ownerName);
     }
     
     public static Account snapshot(AccountNumber id, OwnerName ownerName, Value p_balance) {
-        return new DefaultAccount(id, ownerName, Arrays.asList( new DefaultOrder(id, p_balance)));
+        return new DefaultAccount(id, ownerName, p_balance);
     }
 
 }
