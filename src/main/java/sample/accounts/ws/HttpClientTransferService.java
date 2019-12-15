@@ -6,6 +6,7 @@ import sample.accounts.TransferService;
 import sample.accounts.Value;
 import lajkonik.fp.IO;
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -24,8 +25,6 @@ public class HttpClientTransferService implements TransferService {
     public static final String FROM_ACCOUNT_PARAMETER_NAME = "from";
     public static final String TO_ACCOUNT_PARAMETER_NAME = "to";
     public static final String AMOUNT_PARAMETER_NAME = "amount";
-    public static final String PLAIN_TEXT_CONTENT_TYPE = "text/plain";
-    public static final String TRANSFER_RESOURCE_NAME = "transfer";
     public static final int OK_HTTP_CODE = 200;
     public static final int BUSINESS_LOGIC_CONFLICT_HTTP_CODE = 409;
 
@@ -50,16 +49,24 @@ public class HttpClientTransferService implements TransferService {
     public Integer transferImpl(AccountNumber from, AccountNumber to, Value amount) {
         try {
             final java.net.URL url = new ServiceURL(address,
-                                                    basePath + "/" + TRANSFER_RESOURCE_NAME,
-                                                    new ServiceURL.Param(FROM_ACCOUNT_PARAMETER_NAME, from),
-                                                    new ServiceURL.Param(TO_ACCOUNT_PARAMETER_NAME, to),
-                                                    new ServiceURL.Param(AMOUNT_PARAMETER_NAME, amount)).toURL();        
+                                                    basePath + "/").toURL();        
             final HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
             con.setRequestMethod("POST");
-            con.setRequestProperty("Content-Type", PLAIN_TEXT_CONTENT_TYPE);
+            con.setDoOutput(true);
+            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             con.setConnectTimeout(CONNECT_TIMEOUT_MS);
             con.setReadTimeout(READ_TIMEOUT_MS);
+            con.setUseCaches(false);
+
+            final Params formParams = new Params(new Param(FROM_ACCOUNT_PARAMETER_NAME, from),
+                                                 new Param(TO_ACCOUNT_PARAMETER_NAME, to),
+                                                 new Param(AMOUNT_PARAMETER_NAME, amount));
+            final byte[] bytes = formParams.toString().getBytes("UTF-8");
+
+            try(final DataOutputStream wr = new DataOutputStream( con.getOutputStream())) {
+                wr.write(bytes);
+            }
 
             if (con.getResponseCode() != OK_HTTP_CODE) {
                 final String responseErrorData = read(con.getErrorStream());

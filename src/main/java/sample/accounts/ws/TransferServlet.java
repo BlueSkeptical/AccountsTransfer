@@ -17,7 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
 public class TransferServlet extends HttpServlet {
-    
+
+    public static final String PLAIN_TEXT_CONTENT_TYPE = "text/plain";
+
     private final ThreadSafeExecution ioExecution = new ThreadSafeExecution();
     private final TransferService transferService;
     
@@ -41,10 +43,10 @@ public class TransferServlet extends HttpServlet {
     }
     
     private static void write(HttpServletResponse response, Try<Integer> result) {
-        result.onResult(r -> IO.effect(() -> { response.setContentType(HttpClientTransferService.PLAIN_TEXT_CONTENT_TYPE);
+        result.onResult(r -> IO.effect(() -> { response.setContentType(PLAIN_TEXT_CONTENT_TYPE);
                                                response.setStatus(HttpServletResponse.SC_OK);
                                                write(response, r.toString()); }),
-                     ex -> IO.effect(() -> { response.setContentType(HttpClientTransferService.PLAIN_TEXT_CONTENT_TYPE);
+                     ex -> IO.effect(() -> { response.setContentType(PLAIN_TEXT_CONTENT_TYPE);
                                           response.setStatus(ex instanceof TransferException ? HttpServletResponse.SC_CONFLICT : HttpServletResponse.SC_INTERNAL_SERVER_ERROR); 
                                           write(response, "ERR:" + ex.getMessage());}));
     }

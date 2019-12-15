@@ -1,8 +1,5 @@
 package sample.accounts;
 
-import java.util.Arrays;
-import java.util.Collections;
-
 /**
  * An account type
  */

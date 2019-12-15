@@ -27,14 +27,4 @@ public class ServiceURL {
        }
        return new java.net.URL(sb.toString());
     }
-
-    public static class Param {
-        public final String name;
-        public final Object value;
-        
-        public Param(String name, Object value) {
-            this.name = name;
-            this.value = value;
-        }
-    }
 }
