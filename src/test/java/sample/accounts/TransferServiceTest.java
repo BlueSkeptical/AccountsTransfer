@@ -16,6 +16,9 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import lajkonik.fp.*;
 
+/**
+ * The integration tests of the implementation of TransferService
+ */
 public class TransferServiceTest {
 
     private static Context createContext() {
