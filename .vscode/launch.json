@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - TransferServiceServer",
+            "request": "launch",
+            "mainClass": "sample.accounts.ws.TransferServiceServer",
+            "projectName": "accounts-transfer"
+        }
+    ]
+}
