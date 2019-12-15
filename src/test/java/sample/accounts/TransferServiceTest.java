@@ -32,20 +32,17 @@ public class TransferServiceTest {
     public void should_return_correct_tid_when_successfully_transfered_form_one_account_to_another() {
         final Context ctx = createContext();
      
-        Assert.assertEquals(1, (int)ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), Value.of(10))
-                  .run().getElseThrow(new RuntimeException()));
+        Assert.assertTrue(1 <= (int)ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), Value.of(10)).run().getElseThrow(new RuntimeException()));
     }
     
     @Test
     public void should_correctly_transfer_some_amount_from_one_account_to_another() {
         final Context ctx = createContext();
      
-        final Try<Integer> result = ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), Value.of(10)) .run();
+        final Try<Integer> result = ctx.ts.transfer(ctx.acc0.number(), ctx.acc1.number(), Value.of(10)).run();
+        require(result, v -> assertTrue(v >= 1));
         require(ctx.ar.account(ctx.acc0.number()).run(), v -> assertEquals(new Value(90), v.balance()));
-
-        result.onResult(r -> IO.effect(() -> { require(ctx.ar.account(ctx.acc0.number()).run(), v -> assertEquals(new Value(90), v.balance()));
-                                               require(ctx.ar.account(ctx.acc1.number()).run(), v -> assertEquals(new Value(210), v.balance())); }),
-                        e -> {throw new RuntimeException(e);} );
+        require(ctx.ar.account(ctx.acc1.number()).run(), v -> assertEquals(new Value(210), v.balance()));
     }
 
     @Test
