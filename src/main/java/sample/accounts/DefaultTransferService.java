@@ -23,9 +23,9 @@ public class DefaultTransferService implements TransferService {
 
     private IO<Integer> transfer(Account accountFrom, Account accountTo, Value amount) {
         if (canWithdraw(accountFrom, amount)) {
-           return repository.commit(Transaction.empty()
-                                     .add(new DefaultOrder(accountFrom.number(), amount.negate()))
-                                     .add(new DefaultOrder(accountTo.number(), amount)));
+           return repository.prepareToCommit(Transaction.empty()
+                                             .add(new DefaultOrder(accountFrom.number(), amount.negate()))
+                                             .add(new DefaultOrder(accountTo.number(), amount)));
         } else {
             return IO.of(() -> {throw new TransferException("Not enough money on the account"); });
         }

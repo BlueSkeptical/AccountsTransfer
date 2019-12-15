@@ -6,6 +6,6 @@ import lajkonik.fp.IO;
 
 public interface Commitable<T> {
     
-    IO<Integer> commit(Transaction<T> transaction);
+    IO<Integer> prepareToCommit(Transaction<T> transaction);
     
 }
