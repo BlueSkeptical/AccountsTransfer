@@ -18,7 +18,7 @@ $ curl -d "from=10001&to=10002&amount=100" http://localhost:8080/transfers
 
 ```
 When succeed, the transaction number with HTTP code 200 to be returned.
-In case of a business logic problem, e.g. not enouth amount on the source account, HTTP code 409 and error message to be returned.
+In case of a business logic problem, e.g. not enouth amount on the source account, HTTP code 409 and an error message to be returned.
 
 
 ## A Java client API code example
