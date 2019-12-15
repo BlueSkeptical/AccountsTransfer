@@ -62,7 +62,7 @@
         <dependency>
             <groupId>com.github.vadimv</groupId>
             <artifactId>lajkonik</artifactId>
-            <version>master-58a703eb06-1</version>
+            <version>master-57e04465a0-1</version>
         </dependency>
     </dependencies>
 

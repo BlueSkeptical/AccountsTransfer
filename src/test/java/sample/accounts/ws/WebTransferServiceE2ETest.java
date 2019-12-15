@@ -71,8 +71,8 @@ public class WebTransferServiceE2ETest {
         final Value tooMuchAmount = oldValue0.add(new Value(10));
         final Try<Integer> result = createTransferService().transfer(accNumber0, accNumber1, tooMuchAmount).run();
 
-        result.onResult(r -> IO.effect(() -> { fail(); }),
-                        ex -> IO.effect(() -> { assertTrue(ex instanceof TransferException); } ));
+        result.onResult(r -> { fail(); },
+                        ex  -> { assertTrue(ex instanceof TransferException); } );
 
         require(ar.account(accNumber0).run(), v -> assertEquals(oldValue0, v.balance()));
         require(ar.account(accNumber1).run(), v -> assertEquals(oldValue1, v.balance()));

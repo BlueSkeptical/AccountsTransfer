@@ -28,8 +28,8 @@ public class SimpleAccountsRepositoryTest {
     public void should_fail_for_unknown_account_number() {
         final SimpleAccountsRepository ar = createTestRepository();
         final Try<? extends Account> result = ar.account(new AccountNumber(333)).run();
-        result.onResult(r -> IO.effect(() -> { fail(); }),
-                        ex -> IO.effect(() -> { assertTrue(ex instanceof TransferException); } ));
+        result.onResult(r -> { fail(); },
+                        ex -> { assertTrue(ex instanceof TransferException); });
     }
 
     
