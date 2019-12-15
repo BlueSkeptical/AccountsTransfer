@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-import lajkonik.fp.IO;
 import lajkonik.fp.Try;
 
 import static lajkonik.fp.test.Assertions.require;

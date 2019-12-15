@@ -15,7 +15,6 @@ import sample.accounts.TransferService;
 import sample.accounts.Account;
 import static lajkonik.fp.test.Assertions.require;
 
-import lajkonik.fp.IO;
 import lajkonik.fp.Try;
 
 import java.net.InetSocketAddress;
