@@ -77,8 +77,22 @@ public class WebTransferServiceE2ETest {
         require(ar.account(accNumber1).run(), v -> assertEquals(oldValue1, v.balance()));
     }
 
+    @Test
+    public void should_fail_on_wrong_web_service_endpoint() {
+        final Value amount = new Value(10);
+        final Try<Integer> result = createWrongServerPortTransferService().transfer(accNumber0, accNumber1, amount).run();
+
+        result.onResult(r -> { fail(); },
+                        ex  -> { assertTrue(ex instanceof RuntimeException);
+                                 assertFalse(ex instanceof TransferException); } );
+    }
+
     private static TransferService createTransferService() {
         return new HttpClientTransferService(new InetSocketAddress("localhost", SERVER_PORT));
+    }
+
+    private static TransferService createWrongServerPortTransferService() {
+        return new HttpClientTransferService(new InetSocketAddress("localhost", SERVER_PORT+1));
     }
 
     private static Value getBalance(AccountNumber accountNumber) {
