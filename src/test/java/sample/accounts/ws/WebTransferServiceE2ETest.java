@@ -24,27 +24,26 @@ import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/** 
+ * An end-to-end test for the server and client
+*/
 public class WebTransferServiceE2ETest {
 
-    static final int SERVER_PORT = 8080;
+    private static final int SERVER_PORT = 8080;
+    private static final AccountNumber accNumber0 = new AccountNumber(0);
+    private static final AccountNumber accNumber1 = new AccountNumber(1);
+
     static TransferServiceServer serviceServer;
-    static Account acc0;
-    static Account acc1;
     static AccountsRepository ar;
-    static TransferServiceServer webTransferServiceServer;
-    static TransferService ts;
     
     @BeforeClass
     public static void setupEnvironment() throws Exception {   
-        ts = new HttpClientTransferService(new InetSocketAddress("localhost", SERVER_PORT));
+        final Account acc0 = Account.newInstance(accNumber0,new OwnerName("Joe", "Doe"));
+        final Account acc1 = Account.newInstance(accNumber1, new OwnerName("Mary", "Smith"));
         
-        acc0 = Account.newInstance(new AccountNumber(0),new OwnerName("Joe", "Doe"));
-        acc1 = Account.newInstance(new AccountNumber(1), new OwnerName("Mary", "Smith"));
-        
-        final Order initialMoneyOrder0 = new DefaultOrder(acc0.number(), new Value(100));
-        final Order initialMoneyOrder1 = new DefaultOrder(acc1.number(), new Value(200));
+        final Order initialMoneyOrder0 = new DefaultOrder(accNumber0, new Value(100));
+        final Order initialMoneyOrder1 = new DefaultOrder(accNumber1, new Value(200));
         ar = new SimpleAccountsRepository(Arrays.asList(acc0, acc1), Arrays.asList(initialMoneyOrder0, initialMoneyOrder1));
-        
         
         serviceServer = new TransferServiceServer(SERVER_PORT, new TransferServlet(new DefaultTransferService(ar)));
         serviceServer.start(); 
@@ -52,33 +51,35 @@ public class WebTransferServiceE2ETest {
     
     @Test
     public void should_increase_target_account_and_decrease_source_account_by_transfer_amount() {
-        final Value oldValue0 = getBalance(acc0.number());
-        final Value oldValue1 = getBalance(acc1.number());
+        final Value oldValue0 = getBalance(accNumber0);
+        final Value oldValue1 = getBalance(accNumber1);
 
         final Value amount = new Value(10);
-        final Try<Integer> result = ts.transfer(acc0.number(), acc1.number(), amount).run();
+        final Try<Integer> result = createTransferService().transfer(accNumber0, accNumber1, amount).run();
         
         require(result, p -> assertTrue(p >= 1)); 
         
-        require(ar.account(acc0.number()).run(), v -> assertEquals(oldValue0.substract(amount), v.balance()));
-        require(ar.account(acc1.number()).run(), v -> assertEquals(oldValue1.add(amount), v.balance()));
+        require(ar.account(accNumber0).run(), v -> assertEquals(oldValue0.substract(amount), v.balance()));
+        require(ar.account(accNumber1).run(), v -> assertEquals(oldValue1.add(amount), v.balance()));
     }
-    
     
     @Test
     public void should_fail_and_keep_old_balances_when_amount_on_source_account_is_not_enough() {
-        final Value oldValue0 = getBalance(acc0.number());
-        final Value oldValue1 = getBalance(acc1.number());
+        final Value oldValue0 = getBalance(accNumber0);
+        final Value oldValue1 = getBalance(accNumber1);
         
-
         final Value tooMuchAmount = oldValue0.add(new Value(10));
-        final Try<Integer> result = ts.transfer(acc0.number(), acc1.number(), tooMuchAmount).run();
+        final Try<Integer> result = createTransferService().transfer(accNumber0, accNumber1, tooMuchAmount).run();
 
         result.onResult(r -> IO.effect(() -> { fail(); }),
                         ex -> IO.effect(() -> { assertTrue(ex instanceof TransferException); } ));
 
-        require(ar.account(acc0.number()).run(), v -> assertEquals(oldValue0, v.balance()));
-        require(ar.account(acc1.number()).run(), v -> assertEquals(oldValue1, v.balance()));
+        require(ar.account(accNumber0).run(), v -> assertEquals(oldValue0, v.balance()));
+        require(ar.account(accNumber1).run(), v -> assertEquals(oldValue1, v.balance()));
+    }
+
+    private static TransferService createTransferService() {
+        return new HttpClientTransferService(new InetSocketAddress("localhost", SERVER_PORT));
     }
 
     private static Value getBalance(AccountNumber accountNumber) {
