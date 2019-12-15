@@ -4,6 +4,7 @@ A basic accounts money transfer web service
 ## Running the tests
 
 ```
+
 $ mvn clean test
 
 ```
