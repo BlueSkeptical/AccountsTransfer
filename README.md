@@ -15,7 +15,7 @@ Sending 100 coins from the account 10001 to the account 10002 using HTTP POST:
 
 ```
 
-$ curl -d "from=10001&to=10002&amount=100" http://localhost:8080/transfers
+$ curl -v -d "from=10001&to=10002&amount=100" http://localhost:8080/transfers/
 
 ```
 When succeed, the transaction number with HTTP code 200 to be returned.
