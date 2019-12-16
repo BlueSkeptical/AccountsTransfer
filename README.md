@@ -30,7 +30,7 @@ Sending 100 coins from the account 10001 to the account 10002:
 
 final TransferService ts = new HttpClientTransferService(new InetSocketAddress("localhost", 8080));
 final Try<Integer> result = ts.transfer(new AccountNumber(10001), new AccountNumber(10002), new Value(100)).run();
-// In case of success the result will contain the transaction's number. 
-// In case of a business logic failure the result will contain a TransferException object.
 
 ```
+In case of success the result will contain the transaction's number. 
+In case of a business logic failure the result will contain a TransferException object.
