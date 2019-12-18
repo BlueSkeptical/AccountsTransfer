@@ -6,6 +6,7 @@ import sample.accounts.TransferService;
 import sample.accounts.Value;
 import sample.utils.ThreadSafeExecution;
 import lajkonik.fp.IO;
+import lajkonik.fp.Nothing;
 import lajkonik.fp.Try;
 import java.io.IOException;
 import java.util.Objects;
@@ -33,7 +34,7 @@ public class TransferServlet extends HttpServlet {
         
         final Try<Integer> result = ioExecution.execute(command);
 
-        write(response, result);  
+        writeCommand(response, result).run();  
     }
    
     private static IO<TransferCommand> parseParams(HttpServletRequest request) {
@@ -42,13 +43,13 @@ public class TransferServlet extends HttpServlet {
                                               new Value(Long.parseLong(request.getParameter(HttpClientTransferService.AMOUNT_PARAMETER_NAME)))));
     }
     
-    private static void write(HttpServletResponse response, Try<Integer> result) {
-        result.onResult(r -> IO.effect(() -> { response.setContentType(PLAIN_TEXT_CONTENT_TYPE);
-                                               response.setStatus(HttpServletResponse.SC_OK);
-                                               write(response, r.toString()); }).run(),
-                        ex -> IO.effect(() -> { response.setContentType(PLAIN_TEXT_CONTENT_TYPE);
-                                                response.setStatus(ex instanceof TransferException ? HttpServletResponse.SC_CONFLICT : HttpServletResponse.SC_INTERNAL_SERVER_ERROR); 
-                                                write(response, "ERR:" + ex.getMessage());}).run());
+    private static IO<Nothing> writeCommand(HttpServletResponse response, Try<Integer> result) {
+        return result.toIO(r -> IO.effect(() -> { response.setContentType(PLAIN_TEXT_CONTENT_TYPE);
+                                                  response.setStatus(HttpServletResponse.SC_OK);
+                                                  write(response, r.toString()); }),
+                           ex -> IO.effect(() -> { response.setContentType(PLAIN_TEXT_CONTENT_TYPE);
+                                                   response.setStatus(ex instanceof TransferException ? HttpServletResponse.SC_CONFLICT : HttpServletResponse.SC_INTERNAL_SERVER_ERROR); 
+                                                   write(response, "ERR:" + ex.getMessage());}));
     }
     
     
